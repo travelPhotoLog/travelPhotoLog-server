@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
-const ERROR_MESSAGE = require("../../constant");
-const User = require("../../models/User");
+const ERROR_MESSAGE = require("../constants");
+const User = require("../models/User");
 
 const checkToken = async (req, res, next) => {
   const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
@@ -77,7 +77,7 @@ const checkToken = async (req, res, next) => {
               await user.save();
 
               res.json({
-                result: "재로그인이 필요한 유저입니다.",
+                result: "재로그인이 필요한 유저입니다",
               });
             } catch {
               res.json({
@@ -92,8 +92,8 @@ const checkToken = async (req, res, next) => {
       }
 
       if (error.name === "JsonWebTokenError") {
-        res.status(200).json({
-          result: "해당 유저가 존재하지 않습니다.",
+        res.json({
+          result: "해당 유저가 존재하지 않습니다",
         });
       }
     }

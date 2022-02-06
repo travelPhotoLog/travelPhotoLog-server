@@ -1,5 +1,5 @@
-const ERROR_MESSAGE = require("../../constant");
-const User = require("../../models/User");
+const User = require("../models/User");
+const ERROR_MESSAGE = require("../constants");
 
 const checkUser = async (req, res, next) => {
   const { email } = req.body;
@@ -9,7 +9,7 @@ const checkUser = async (req, res, next) => {
 
     if (!user) {
       res.json({
-        result: "해당 유저가 존재하지 않습니다.",
+        result: "해당 유저가 존재하지 않습니다",
       });
 
       return;
