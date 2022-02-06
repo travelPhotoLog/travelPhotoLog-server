@@ -1,7 +1,7 @@
 const express = require("express");
 
-const checkToken = require("../middleware/tokenValidation");
-const checkUser = require("../middleware/userValidation");
+const checkToken = require("../middlewares/tokenValidation");
+const checkUser = require("../middlewares/userValidation");
 const {
   postLogin,
   postLogout,
