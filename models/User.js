@@ -6,18 +6,18 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    validate: [isEmail, "Please enter a valid Email"]
+    validate: [isEmail, "Please enter a valid Email"],
   },
   profileUrl: {
     type: String,
     required: true,
     unique: true,
-    validate: [isURL, "Must be a valid URL"]
+    validate: [isURL, "Must be a valid URL"],
   },
   nickname: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   occupation: {
     type: String,
@@ -28,45 +28,45 @@ const UserSchema = new mongoose.Schema({
           "officeWorker",
           "houseWife",
           "jobSeeker",
-          "etc"
+          "etc",
         ];
 
-        return occupationList.includes(value);
+        return !occupationList.includes(value);
       },
-      message: "It is invalid occupation"
-    }
+      message: "It is invalid occupation",
+    },
   },
   birthday: {
     type: Date,
     validate: {
-      validator: value => {
-        return new Date() > value;
-      },
-      message: "This date is not possible."
-    }
+      validator: value => new Date() > value,
+      message: "This date is not possible.",
+    },
   },
   contact: {
     type: String,
     trim: true,
-    minlength: [13, "The phone number must be 13 digits, including '-'."],
-    maxlength: [13, "The phone number must be 13 digits, including '-'."]
+    validate: {
+      validator: value => value.length === 13,
+      message: "The phone number must be 13 digits, including '-'.",
+    },
+  },
+  refreshToken: {
+    type: String,
+    default: "",
   },
   myMaps: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Map"
-    }
+      ref: "Map",
+    },
   ],
   myPostings: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Posting"
-    }
+      ref: "Posting",
+    },
   ],
-  refreshToken: {
-    type: String,
-    default: ""
-  }
 });
 
 module.exports = mongoose.model("User", UserSchema);

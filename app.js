@@ -1,13 +1,14 @@
 require("dotenv").config();
 
-const express = require("express");
-const createError = require("http-errors");
 const path = require("path");
-const mongoose = require("mongoose");
+
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const express = require("express");
+const createError = require("http-errors");
+const mongoose = require("mongoose");
 
-const MESSAGE = require("./constant");
+const ERROR_MESSAGE = require("./constant");
 const auth = require("./routes/auth");
 
 const app = express();
@@ -28,7 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/auth", auth);
 
 app.use((req, res, next) => {
-  next(createError(404, MESSAGE.NOT_FOUNT));
+  next(createError(404, ERROR_MESSAGE.NOT_FOUNT));
 });
 
 app.use((err, req, res, next) => {

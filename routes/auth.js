@@ -1,6 +1,6 @@
 const express = require("express");
-const MESSAGE = require("../constant");
 
+const ERROR_MESSAGE = require("../constant");
 const User = require("../models/User");
 const checkToken = require("./middleware/tokenValidation");
 const checkUser = require("./middleware/userValidation");
@@ -17,15 +17,15 @@ router.post("/login", checkUser, checkToken, async (req, res, next) => {
       user: {
         id: user._id,
         email: user.email,
-        nickname: user.nickname
-      }
+        nickname: user.nickname,
+      },
     });
   } catch {
     res.json({
       error: {
-        message: MESSAGE.SERVER_ERROR,
-        code: 500
-      }
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
     });
   }
 });
@@ -38,14 +38,14 @@ router.post("/logout", async (req, res, next) => {
 
     res.clearCookie("accessToken");
     res.json({
-      result: "재로그인이 필요한 유저입니다."
+      result: "ok",
     });
   } catch {
     res.json({
       error: {
-        message: MESSAGE.SERVER_ERROR,
-        code: 500
-      }
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
     });
   }
 });

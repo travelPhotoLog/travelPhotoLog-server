@@ -1,45 +1,43 @@
-const mongooes = require("mongoose");
+const mongoose = require("mongoose");
 const { isURL } = require("validator");
 
-const PhotoSchema = new mongooes.Schema({
+const PhotoSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     required: true,
     validate: {
-      validator: value => {
-        return new Date() > value;
-      },
-      message: "This date is not possible."
-    }
+      validator: value => new Date() > value,
+      message: "This date is not possible.",
+    },
   },
   createdBy: {
     type: String,
-    require: true
+    require: true,
   },
   url: {
     type: String,
     required: true,
     unique: true,
-    validate: [isURL, "Must be a valid URL"]
+    validate: [isURL, "Must be a valid URL"],
   },
   placeName: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    default: ""
+    default: "",
   },
   comments: [
     {
-      type: mongooes.Schema.Types.ObjectId,
-      ref: "Commnet"
-    }
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+    },
   ],
-  point: {
-    type: mongooes.Schema.Types.ObjectId,
-    ref: "Point"
-  }
+  points: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Point",
+  },
 });
 
-module.exports = mongooes.model("Photo", PhotoSchema);
+module.exports = mongoose.model("Photo", PhotoSchema);
