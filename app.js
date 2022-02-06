@@ -8,7 +8,7 @@ const express = require("express");
 const createError = require("http-errors");
 const mongoose = require("mongoose");
 
-const ERROR_MESSAGE = require("./constant");
+const ERROR_MESSAGE = require("./constants");
 const auth = require("./routes/auth");
 
 const app = express();
@@ -17,13 +17,13 @@ mongoose.connect(process.env.MONGODB_URL).catch(error => {
   console.log(`🔴 Connection error.. with [${error}]`);
 });
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "jade");
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", auth);

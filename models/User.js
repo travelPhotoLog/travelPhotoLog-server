@@ -26,7 +26,7 @@ const UserSchema = new mongoose.Schema({
         const occupationList = [
           "student",
           "officeWorker",
-          "houseWife",
+          "housewife",
           "jobSeeker",
           "etc",
         ];
