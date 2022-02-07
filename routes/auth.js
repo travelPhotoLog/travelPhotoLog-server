@@ -1,7 +1,10 @@
 const express = require("express");
 
-const checkToken = require("../middlewares/tokenValidation");
-const checkUser = require("../middlewares/userValidation");
+const {
+  validateUser,
+  validateToken,
+} = require("../middlewares/userValidation");
+
 const {
   postLogin,
   postLogout,
@@ -10,7 +13,7 @@ const {
 
 const router = express.Router();
 
-router.post("/login", checkUser, checkToken, postLogin);
+router.post("/login", validateUser, validateToken, postLogin);
 router.post("/logout", postLogout);
 router.post("/sign-up", postSignUp);
 
