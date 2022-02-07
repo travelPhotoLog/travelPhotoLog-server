@@ -3,7 +3,7 @@ const express = require("express");
 const {
   validate,
   signUpInputValidators,
-} = require("../middlewares/userInputValidation");
+} = require("../middlewares/inputValidation");
 
 const {
   validateUser,
