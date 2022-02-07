@@ -1,5 +1,5 @@
-const ERROR_MESSAGE = require("../constants");
 const User = require("../models/User");
+const ERROR_MESSAGE = require("../constants");
 
 const postLogin = async (req, res, next) => {
   const { email } = req.body;
@@ -49,6 +49,8 @@ const postSignUp = async (req, res, next) => {
 
   try {
     await User.create(user);
+
+    res.send({ result: "ok" });
   } catch (err) {
     if (err.name === "MongoServerError" && err.code === 11000) {
       res.json({
