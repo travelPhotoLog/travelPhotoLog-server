@@ -10,7 +10,7 @@ const {
   validateToken,
 } = require("../middlewares/userValidation");
 
-const authController = require("../controllers/auth.controller");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
 
