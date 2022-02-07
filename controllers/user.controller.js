@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const ERROR_MESSAGE = require("../constants");
 
 const getUserMaps = async (req, res, next) => {
   const { id } = req.params;
@@ -15,7 +16,7 @@ const getUserMaps = async (req, res, next) => {
   } catch (error) {
     res.json({
       error: {
-        message: "Server is not stable",
+        message: ERROR_MESSAGE.SERVER_ERROR,
         code: 500,
       },
     });
