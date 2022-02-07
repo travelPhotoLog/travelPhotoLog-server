@@ -16,7 +16,7 @@ const getUserMaps = async (req, res, next) => {
     res.json({
       error: {
         message: "Server is not stable",
-        status: 500,
+        code: 500,
       },
     });
   }
