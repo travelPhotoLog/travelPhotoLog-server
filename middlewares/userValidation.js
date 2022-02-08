@@ -7,7 +7,7 @@ const validateUser = async (req, res, next) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email }).exec();
+    const user = await User.findOne({ email });
 
     if (!user) {
       res.json({
@@ -17,6 +17,7 @@ const validateUser = async (req, res, next) => {
       return;
     }
 
+    req.user = user;
     next();
   } catch {
     res.json({
@@ -30,12 +31,10 @@ const validateUser = async (req, res, next) => {
 
 const validateToken = async (req, res, next) => {
   const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
-  const { accessToken } = req.cookies;
-  const user = req.body
-    ? await User.findOne({ email: req.body.email }).exec()
-    : await User.findById(req.params.id).exec();
+  const { accessToken, refreshToken } = req.cookies;
+  const { user } = req;
 
-  if (!accessToken) {
+  if (!accessToken && user) {
     const newAccessToken = jwt.sign({ email: user.email }, ACCESS_SECRET_KEY, {
       expiresIn: "1h",
     });
@@ -47,18 +46,16 @@ const validateToken = async (req, res, next) => {
       }
     );
 
-    res.cookie("accessToken", newAccessToken, {
-      maxAge: 3600,
-      httpOnly: true,
-    });
+    req.newAccessToken = newAccessToken;
+    req.newRefreshToken = newRefreshToken;
 
-    user.refreshToken = newRefreshToken;
+    user.newRefreshToken = newRefreshToken;
 
     try {
       await user.save();
 
       next();
-    } catch {
+    } catch (error) {
       res.json({
         error: {
           message: ERROR_MESSAGE.SERVER_ERROR,
@@ -66,61 +63,57 @@ const validateToken = async (req, res, next) => {
         },
       });
     }
+
+    return;
   }
 
-  if (accessToken) {
-    try {
-      jwt.verify(accessToken, ACCESS_SECRET_KEY);
+  try {
+    jwt.verify(accessToken, ACCESS_SECRET_KEY);
 
-      next();
-    } catch (error) {
-      if (error.name === "TokenExpiredError") {
-        try {
-          const decodedToken = jwt.verify(
-            user.refreshToken,
-            REFRESH_SECRET_KEY
-          );
-          const newAccessToken = jwt.sign(
-            { email: decodedToken.email },
-            ACCESS_SECRET_KEY,
-            { expiresIn: "1h" }
-          );
+    next();
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      try {
+        const decodedToken = jwt.verify(refreshToken, REFRESH_SECRET_KEY);
+        const newAccessToken = jwt.sign(
+          { email: decodedToken.email },
+          ACCESS_SECRET_KEY,
+          { expiresIn: "1h" }
+        );
 
-          res.cookie("accessToken", newAccessToken, {
-            maxAge: 3600,
-            httpOnly: true,
-          });
+        req.newAccessToken = newAccessToken;
 
-          next();
-        } catch (error) {
-          if (error.name === "TokenExpiredError") {
+        next();
+      } catch (error) {
+        if (error.name === "TokenExpiredError") {
+          try {
+            await User.findOneAndUpdate(
+              { refreshToken },
+              { refreshToken: "" }
+            ).exec();
+
             res.clearCookie("accessToken");
+            res.clearCookie("refreshToken");
 
-            user.refreshToken = "";
-
-            try {
-              await user.save();
-
-              res.json({
-                result: "재로그인이 필요한 유저입니다",
-              });
-            } catch {
-              res.json({
-                error: {
-                  message: ERROR_MESSAGE.SERVER_ERROR,
-                  code: 500,
-                },
-              });
-            }
+            res.json({
+              result: "재로그인이 필요한 유저입니다",
+            });
+          } catch {
+            res.json({
+              error: {
+                message: ERROR_MESSAGE.SERVER_ERROR,
+                code: 500,
+              },
+            });
           }
         }
       }
+    }
 
-      if (error.name === "JsonWebTokenError") {
-        res.json({
-          result: "해당 유저가 존재하지 않습니다",
-        });
-      }
+    if (error.name === "JsonWebTokenError") {
+      res.json({
+        result: "해당 유저가 존재하지 않습니다",
+      });
     }
   }
 };
