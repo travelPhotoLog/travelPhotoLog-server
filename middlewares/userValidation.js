@@ -7,7 +7,7 @@ const validateUser = async (req, res, next) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).exec();
 
     if (!user) {
       res.json({
@@ -17,7 +17,7 @@ const validateUser = async (req, res, next) => {
       return;
     }
 
-    req.user = user;
+    res.locals.user = user;
     next();
   } catch {
     res.json({
@@ -32,7 +32,7 @@ const validateUser = async (req, res, next) => {
 const validateToken = async (req, res, next) => {
   const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
   const { accessToken, refreshToken } = req.cookies;
-  const { user } = req;
+  const { user } = res.locals;
 
   if (!accessToken && user) {
     const newAccessToken = jwt.sign({ email: user.email }, ACCESS_SECRET_KEY, {
@@ -46,8 +46,17 @@ const validateToken = async (req, res, next) => {
       }
     );
 
-    req.newAccessToken = newAccessToken;
-    req.newRefreshToken = newRefreshToken;
+    res.locals.newAccessToken = newAccessToken;
+
+    res.cookie("accessToken", newAccessToken, {
+      maxAge: 60 * 60 * 1000,
+      httpOnly: true,
+    });
+
+    res.cookie("refreshToken", newRefreshToken, {
+      maxAge: 14 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    });
 
     user.newRefreshToken = newRefreshToken;
 
@@ -81,7 +90,12 @@ const validateToken = async (req, res, next) => {
           { expiresIn: "1h" }
         );
 
-        req.newAccessToken = newAccessToken;
+        res.locals.newAccessToken = newAccessToken;
+
+        res.cookie("accessToken", newAccessToken, {
+          maxAge: 60 * 60 * 1000,
+          httpOnly: true,
+        });
 
         next();
       } catch (error) {
