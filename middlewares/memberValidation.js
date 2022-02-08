@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+
 const User = require("../models/User");
 const ERROR_MESSAGE = require("../constants");
 
@@ -16,12 +17,12 @@ const validateMember = async (req, res, next) => {
       : jwt.verify(accessToken, ACCESS_SECRET_KEY);
 
     try {
-      const currentUser = await User.findOne({ email }).lean().exec();
-      const userMaps = currentUser.myMaps;
+      const { myMaps: userMaps } = await User.findOne({ email }).lean().exec();
 
       if (userMaps.includes(id)) {
         next();
       }
+
       res.json({
         result: ERROR_MESSAGE.NOT_VALID_URL,
       });

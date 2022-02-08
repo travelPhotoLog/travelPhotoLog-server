@@ -8,8 +8,8 @@ const ERROR_MESSAGE = Object.freeze({
   NICKNAME_REQUIRED: "nickname은 필수 입력란 입니다.",
   PROFILE_URL_REQUIRED: "profileUrl 값이 없습니다.",
   NOT_VALID_URL: "접근 불가능한 URL입니다.",
-  NOT_VALID_USER: "해당 유저가 존재하지 않습니다",
-  RELOGIN_NEEDED: "재로그인이 필요한 유저입니다",
+  NOT_VALID_USER: "해당 유저가 존재하지 않습니다.",
+  RELOGIN_NEEDED: "재로그인이 필요한 유저입니다.",
 });
 
 module.exports = ERROR_MESSAGE;

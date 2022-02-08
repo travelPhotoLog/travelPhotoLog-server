@@ -58,7 +58,7 @@ const validateToken = async (req, res, next) => {
       httpOnly: true,
     });
 
-    user.newRefreshToken = newRefreshToken;
+    user.refreshToken = newRefreshToken;
 
     try {
       await user.save();

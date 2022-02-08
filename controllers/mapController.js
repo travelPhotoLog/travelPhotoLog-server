@@ -1,7 +1,7 @@
 const Map = require("../models/Map");
 const ERROR_MESSAGE = require("../constants");
 
-const getmapPoints = async (req, res, next) => {
+const getMapPoints = async (req, res, next) => {
   const { id } = req.params;
 
   try {
@@ -21,4 +21,4 @@ const getmapPoints = async (req, res, next) => {
   }
 };
 
-exports.getmapPoints = getmapPoints;
+exports.getMapPoints = getMapPoints;

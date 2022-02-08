@@ -11,7 +11,7 @@ router.get(
   "/:id/points",
   validateToken,
   validateMember,
-  mapController.getmapPoints
+  mapController.getMapPoints
 );
 
 module.exports = router;
