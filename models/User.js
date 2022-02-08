@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema({
     validate: {
       validator: value => {
         const occupationList = [
+          "",
           "student",
           "officeWorker",
           "housewife",
@@ -31,7 +32,7 @@ const UserSchema = new mongoose.Schema({
           "etc",
         ];
 
-        return !occupationList.includes(value);
+        return occupationList.includes(value);
       },
       message: "It is invalid occupation",
     },
@@ -46,10 +47,6 @@ const UserSchema = new mongoose.Schema({
   contact: {
     type: String,
     trim: true,
-    validate: {
-      validator: value => value.length === 13,
-      message: "The phone number must be 13 digits, including '-'.",
-    },
   },
   refreshToken: {
     type: String,
