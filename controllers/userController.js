@@ -5,7 +5,10 @@ const getUserMaps = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const userMaps = await User.findById(id).populate("myMaps").lean().exec();
+    const { myMaps: userMaps } = await User.findById(id)
+      .populate("myMaps")
+      .lean()
+      .exec();
 
     const maps = userMaps.map(map => ({
       id: map._id,

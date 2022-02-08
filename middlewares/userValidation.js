@@ -11,7 +11,7 @@ const validateUser = async (req, res, next) => {
 
     if (!user) {
       res.json({
-        result: "해당 유저가 존재하지 않습니다",
+        result: ERROR_MESSAGE.NOT_VALID_USER,
       });
 
       return;
@@ -58,7 +58,7 @@ const validateToken = async (req, res, next) => {
       httpOnly: true,
     });
 
-    user.newRefreshToken = newRefreshToken;
+    user.refreshToken = newRefreshToken;
 
     try {
       await user.save();
@@ -110,7 +110,7 @@ const validateToken = async (req, res, next) => {
             res.clearCookie("refreshToken");
 
             res.json({
-              result: "재로그인이 필요한 유저입니다",
+              message: ERROR_MESSAGE.RELOGIN_NEEDED,
             });
           } catch {
             res.json({
@@ -126,7 +126,7 @@ const validateToken = async (req, res, next) => {
 
     if (error.name === "JsonWebTokenError") {
       res.json({
-        result: "해당 유저가 존재하지 않습니다",
+        result: ERROR_MESSAGE.NOT_VALID_USER,
       });
     }
   }
