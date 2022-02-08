@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
 const ERROR_MESSAGE = require("./constants");
 const auth = require("./routes/auth");
 const user = require("./routes/user");
+const map = require("./routes/map");
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/auth", auth);
 app.use("/user", user);
+app.use("/map", map);
 
 app.use((req, res, next) => {
   next(createError(404, ERROR_MESSAGE.NOT_FOUNT));
