@@ -17,23 +17,37 @@ const validateMember = async (req, res, next) => {
       : jwt.verify(accessToken, ACCESS_SECRET_KEY);
 
     try {
-      const { myMaps: userMaps } = await User.findOne({ email }).lean().exec();
+      const { myMaps: userMaps } = await User.findOne({ email })
+        .populate("myMaps")
+        .lean()
+        .exec();
 
-      if (userMaps.includes(id)) {
+      const existMap = userMaps.find(map => map._id === id);
+
+      if (existMap) {
         next();
       }
 
       res.json({
-        result: ERROR_MESSAGE.NOT_VALID_URL,
+        error: {
+          message: ERROR_MESSAGE.FORBIDDEN,
+          code: 403,
+        },
       });
     } catch (error) {
       res.json({
-        result: ERROR_MESSAGE.NOT_VALID_URL,
+        error: {
+          message: ERROR_MESSAGE.SERVER_ERROR,
+          code: 500,
+        },
       });
     }
   } catch (error) {
     res.json({
-      result: ERROR_MESSAGE.NOT_VALID_URL,
+      error: {
+        message: ERROR_MESSAGE.UNAUTHORIZED,
+        code: 401,
+      },
     });
   }
 };

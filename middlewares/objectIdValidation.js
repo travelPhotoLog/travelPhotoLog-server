@@ -9,7 +9,7 @@ const validateId = (req, res, next) => {
     res.json({
       error: {
         message: ERROR_MESSAGE.BAD_REQUEST,
-        status: 400,
+        code: 400,
       },
     });
 
