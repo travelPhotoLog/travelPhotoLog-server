@@ -132,6 +132,7 @@ const inviteNewMember = async (req, res, next) => {
       res.json({
         result: "등록되지 않은 유저입니다.",
       });
+
       return;
     }
 
@@ -139,6 +140,7 @@ const inviteNewMember = async (req, res, next) => {
       res.json({
         result: "이미 같은 그룹 멤버입니다.",
       });
+
       return;
     }
 
@@ -146,6 +148,7 @@ const inviteNewMember = async (req, res, next) => {
       res.json({
         result: "이미 초대 메일을 보낸 유저입니다.",
       });
+
       return;
     }
 
