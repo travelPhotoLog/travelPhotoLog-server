@@ -1,12 +1,15 @@
-# [11] [BE] 같은 그룹 멤버 불러오기
+# [14] [BE] 초대 링크 수락 시, map 스키마 멤버 업데이트
 
 ## 노션 칸반 링크
 
-- [[BE] 같은 그룹 멤버 불러오기](https://www.notion.so/vanillacoding/BE-302c980920004392a991a5388eb15818)
+- [[BE] 초대 링크 수락 시, map 스키마 멤버 업데이트](https://www.notion.so/vanillacoding/BE-map-9f3bbea3b253411487db6c2ed1fbe1df)
 
 ## 카드에서 구현 혹은 해결하려는 내용
 
-- 서버 endpoint에 포함된 map의 object Id를 활용해서 해당 map의 members 데이터를 클라이언트에 넘겨주기
+- req.params에 담긴 토큰 정보를 복호화해서 이메일 정보 얻기
+- 이메일로 유저 정보를 찾기
+- 위에서 찾아낸 User id를 map의 members에 추가하기
+- map의 members에 성공적으로 추가되었다면 invitation list 배열에서 멤버로 추가한 이메일 삭제하기
 
 ## 테스트 방법
 
@@ -14,4 +17,5 @@
 
 ## 기타 사항
 
-- 멤버를 불러오는 작업은, 지도 상세페이지의 클라이언트 url과 같은 주소에서 nav바를 클릭해야 볼 수 있기 때문에 해당 서버 endpoint에서는 유효한 사용자인지 검증하지 않았습니다.
+- 전반적인 변수 네이밍이 조금 어려웠는데, 각 파일, 함수들 네이밍 확인해보시고 의견 남겨주세요! 저는 일단 컨트롤러 함수를 acceptInvitation이라고 했는데 좀 이상한 것 같아서 여러분의 의견이 궁금합니다..!
+- mapController 파일의 92 - 98번째 줄이 map의 invitationList에서 map의 멤버가 된 이메일을 삭제해주는 로직인데 조금 복잡해보이기도 해서, 혹시 더 나은 코드가 생각나신다면 의견 남겨주세요..!

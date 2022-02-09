@@ -3,6 +3,7 @@ const express = require("express");
 const { validateId } = require("../middlewares/objectIdValidation");
 const { validateToken } = require("../middlewares/userValidation");
 const { validateMember } = require("../middlewares/memberValidation");
+const { validateInvitation } = require("../middlewares/inviteValidation");
 
 const mapController = require("../controllers/mapController");
 
@@ -17,5 +18,11 @@ router.get(
 );
 router.post("/new", mapController.createNewMap);
 router.get("/:id/members", validateId, mapController.getMembers);
+router.put(
+  "/:id/invitation/:token",
+  validateId,
+  validateInvitation,
+  mapController.acceptInvitation
+);
 
 module.exports = router;

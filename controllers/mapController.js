@@ -75,6 +75,44 @@ const getMembers = async (req, res, next) => {
   }
 };
 
+const acceptInvitation = async (req, res, next) => {
+  const { id } = req.params;
+  const { userEmail } = res.locals;
+
+  try {
+    const user = await User.findOneAndUpdate(
+      { email: userEmail },
+      { $push: { myMaps: id } }
+    ).exec();
+    const map = await Map.findById(id).exec();
+    const { invitationList } = map;
+
+    map.members.push(user._id);
+
+    for (let i = 0; i < invitationList.length; i++) {
+      if (invitationList[i].email === userEmail) {
+        invitationList.splice(i, 1);
+
+        break;
+      }
+    }
+
+    await map.save();
+
+    res.json({
+      result: "ok",
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 exports.getMapPoints = getMapPoints;
 exports.createNewMap = createNewMap;
 exports.getMembers = getMembers;
+exports.acceptInvitation = acceptInvitation;

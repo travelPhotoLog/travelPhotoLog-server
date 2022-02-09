@@ -8,8 +8,12 @@ const MapSchema = new mongoose.Schema({
   },
   invitationList: [
     {
-      type: String,
-      validate: [isEmail, "Must be a valid Email."],
+      email: {
+        type: String,
+        validate: [isEmail, "Must be a valid Email."],
+        required: true,
+      },
+      token: { type: String, required: true },
     },
   ],
   photos: [
