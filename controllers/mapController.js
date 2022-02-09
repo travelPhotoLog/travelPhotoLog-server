@@ -1,7 +1,12 @@
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+
 const Map = require("../models/Map");
 const User = require("../models/User");
 
 const ERROR_MESSAGE = require("../constants");
+
+const { INVITATION_MAIL, INVITATION_PASSWORD } = process.env;
 
 const getMapPoints = async (req, res, next) => {
   const { id } = req.params;
@@ -110,7 +115,87 @@ const addInvitedUser = async (req, res, next) => {
   }
 };
 
+const inviteNewMember = async (req, res, next) => {
+  const { id } = req.params;
+  const { email } = req.body;
+
+  try {
+    const currentMap = await Map.findById(id).exec();
+    const newUser = await User.findOne({ email }).exec();
+
+    const userId = newUser._id;
+    const verifyInvitedEmail = currentMap.invitationList
+      .map(user => user.email)
+      .some(invitedEmail => invitedEmail === email);
+
+    if (!newUser) {
+      res.json({
+        message: "등록되지 않은 유저입니다.",
+      });
+      return;
+    }
+
+    if (currentMap.members.some(member => member.equals(userId))) {
+      res.json({
+        message: "이미 같은 그룹 멤버입니다.",
+      });
+      return;
+    }
+
+    if (verifyInvitedEmail) {
+      res.json({
+        message: "이미 초대 메일을 보낸 유저입니다.",
+      });
+      return;
+    }
+
+    const invitationToken = jwt.sign(
+      { email },
+      process.env.INVITATION_SECRET_KEY,
+      {
+        expiresIn: "2d",
+      }
+    );
+
+    const invitationUrl = `http://localhost:3000/my-travels/${id}/invitation/${invitationToken}`;
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: INVITATION_MAIL,
+        pass: INVITATION_PASSWORD,
+      },
+    });
+
+    const sendMail = transporter.sendMail({
+      from: INVITATION_MAIL,
+      to: email,
+      subject: "[OCN] 그룹 초대 메일",
+      html: `<p> 아래 링크를 누르면 그룹으로 초대 됩니다 </p> <a href=${invitationUrl} >초대링크</a>`,
+    });
+
+    currentMap.invitationList.push({
+      email,
+      token: invitationToken,
+    });
+
+    await Promise.all([sendMail, currentMap.save()]);
+
+    res.json({
+      result: "메일 발송 성공",
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 exports.getMapPoints = getMapPoints;
 exports.createNewMap = createNewMap;
 exports.getMembers = getMembers;
 exports.addInvitedUser = addInvitedUser;
+exports.inviteNewMember = inviteNewMember;

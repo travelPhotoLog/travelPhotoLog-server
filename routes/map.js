@@ -18,6 +18,8 @@ router.get(
 );
 router.post("/new", mapController.createNewMap);
 router.get("/:id/members", validateId, mapController.getMembers);
+
+router.put("/:id/invitation", validateId, mapController.inviteNewMember);
 router.put(
   "/:id/invitation/:token",
   validateId,

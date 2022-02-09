@@ -10,6 +10,7 @@ const ERROR_MESSAGE = Object.freeze({
   RELOGIN_NEEDED: "재로그인이 필요한 유저입니다.",
   FORBIDDEN: "해당 페이지에 접근 권한이 없습니다.",
   UNAUTHORIZED: "인증되지 않은 유저입니다.",
+  NOT_VALID_USER: "해당 유저가 존재하지 않습니다.",
 });
 
 module.exports = ERROR_MESSAGE;
