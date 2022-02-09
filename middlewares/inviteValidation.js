@@ -4,10 +4,11 @@ const ERROR_MESSAGE = require("../constants");
 
 const validateInvitation = (req, res, next) => {
   const { token } = req.params;
-  const { INVITATION_SECRET_KEY } = process.env;
+  const { INVITATION_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
 
   try {
-    res.locals.userEmail = jwt.verify(token, INVITATION_SECRET_KEY).email;
+    // res.locals.userEmail = jwt.verify(token, INVITATION_SECRET_KEY).email;
+    res.locals.userEmail = jwt.verify(token, REFRESH_SECRET_KEY).email;
 
     next();
   } catch (error) {

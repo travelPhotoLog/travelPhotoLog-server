@@ -22,7 +22,7 @@ router.put(
   "/:id/invitation/:token",
   validateId,
   validateInvitation,
-  mapController.acceptInvitation
+  mapController.addInvitedUser
 );
 
 module.exports = router;

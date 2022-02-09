@@ -75,7 +75,7 @@ const getMembers = async (req, res, next) => {
   }
 };
 
-const acceptInvitation = async (req, res, next) => {
+const addInvitedUser = async (req, res, next) => {
   const { id } = req.params;
   const { userEmail } = res.locals;
 
@@ -85,17 +85,15 @@ const acceptInvitation = async (req, res, next) => {
       { $push: { myMaps: id } }
     ).exec();
     const map = await Map.findById(id).exec();
-    const { invitationList } = map;
 
     map.members.push(user._id);
 
-    for (let i = 0; i < invitationList.length; i++) {
-      if (invitationList[i].email === userEmail) {
-        invitationList.splice(i, 1);
+    const { invitationList } = map;
+    const removedUserIndex = invitationList
+      .map(user => user.email)
+      .indexOf(userEmail);
 
-        break;
-      }
-    }
+    invitationList.splice(removedUserIndex, 1);
 
     await map.save();
 
@@ -115,4 +113,4 @@ const acceptInvitation = async (req, res, next) => {
 exports.getMapPoints = getMapPoints;
 exports.createNewMap = createNewMap;
 exports.getMembers = getMembers;
-exports.acceptInvitation = acceptInvitation;
+exports.addInvitedUser = addInvitedUser;
