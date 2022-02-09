@@ -16,5 +16,6 @@ router.get(
   mapController.getMapPoints
 );
 router.post("/new", mapController.createNewMap);
+router.get("/:id/members", validateId, mapController.getMembers);
 
 module.exports = router;
