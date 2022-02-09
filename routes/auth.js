@@ -14,6 +14,7 @@ const authController = require("../controllers/authController");
 
 const router = express.Router();
 
+router.get("/auto-login", validateToken, authController.postLogin);
 router.post("/auto-login", validateToken, authController.postLogin);
 router.post("/login", validateUser, validateToken, authController.postLogin);
 router.post("/logout", authController.postLogout);

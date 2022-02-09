@@ -46,5 +46,36 @@ const createNewMap = async (req, res, next) => {
   }
 };
 
+const getMembers = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const { members: memberList } = await Map.findById(id)
+      .populate("members")
+      .lean()
+      .exec();
+    const members = [];
+
+    memberList.map(member => {
+      return members.push({
+        profileUrl: member.profileUrl,
+        nickname: member.nickname,
+      });
+    });
+
+    res.json({
+      members,
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 exports.getMapPoints = getMapPoints;
 exports.createNewMap = createNewMap;
+exports.getMembers = getMembers;

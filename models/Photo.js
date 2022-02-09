@@ -34,10 +34,12 @@ const PhotoSchema = new mongoose.Schema({
       ref: "Comment",
     },
   ],
-  points: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Point",
-  },
+  points: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Point",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Photo", PhotoSchema);
