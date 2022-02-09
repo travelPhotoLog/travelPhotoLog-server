@@ -15,7 +15,6 @@ router.get(
   validateMember,
   mapController.getMapPoints
 );
-
-router.post("/new", validateToken, mapController.createNewMap);
+router.post("/new", mapController.createNewMap);
 
 module.exports = router;

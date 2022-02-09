@@ -24,17 +24,16 @@ const getMapPoints = async (req, res, next) => {
 };
 
 const createNewMap = async (req, res, next) => {
-  const { map, user } = req.body;
+  const { map, user: id } = req.body;
 
   try {
-    const currentUser = await User.findOne({ _id: user }).exec();
+    const currentUser = await User.findById(id).exec();
     const newMap = new Map(map);
 
     newMap.members.push(currentUser);
     currentUser.myMaps.push(newMap);
 
-    await newMap.save();
-    await currentUser.save();
+    await Promise.all([newMap.save(), currentUser.save()]);
 
     res.json({ result: "ok" });
   } catch (error) {
