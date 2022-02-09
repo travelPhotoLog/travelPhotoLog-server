@@ -33,7 +33,7 @@ app.use("/user", user);
 app.use("/map", map);
 
 app.use((req, res, next) => {
-  next(createError(404, ERROR_MESSAGE.NOT_FOUNT));
+  next(createError(404, ERROR_MESSAGE.NOT_FOUND));
 });
 
 app.use((err, req, res, next) => {
