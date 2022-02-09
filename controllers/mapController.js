@@ -4,9 +4,10 @@ const nodemailer = require("nodemailer");
 const Map = require("../models/Map");
 const User = require("../models/User");
 
-const ERROR_MESSAGE = require("../constants");
+const { ERROR_MESSAGE, RESPONSE_MESSAGE } = require("../constants");
 
-const { INVITATION_MAIL, INVITATION_PASSWORD } = process.env;
+const { INVITATION_SECRET_KEY, INVITATION_MAIL, INVITATION_PASSWORD } =
+  process.env;
 
 const getMapPoints = async (req, res, next) => {
   const { id } = req.params;
@@ -121,44 +122,40 @@ const inviteNewMember = async (req, res, next) => {
 
   try {
     const currentMap = await Map.findById(id).exec();
-    const newUser = await User.findOne({ email }).exec();
+    const invitedUser = await User.findOne({ email }).exec();
 
-    const userId = newUser._id;
-    const verifyInvitedEmail = currentMap.invitationList
+    if (!invitedUser) {
+      res.json({
+        result: ERROR_MESSAGE.NOT_VALID_USER,
+      });
+
+      return;
+    }
+
+    const userId = invitedUser._id;
+    const invitedEmail = currentMap.invitationList
       .map(user => user.email)
-      .some(invitedEmail => invitedEmail === email);
+      .includes(email);
 
-    if (!newUser) {
+    if (currentMap.members.includes(userId)) {
       res.json({
-        result: "등록되지 않은 유저입니다.",
+        result: RESPONSE_MESSAGE.ALREADY_IN_SAME_GROUP,
       });
 
       return;
     }
 
-    if (currentMap.members.some(member => member.equals(userId))) {
+    if (invitedEmail) {
       res.json({
-        result: "이미 같은 그룹 멤버입니다.",
+        result: RESPONSE_MESSAGE.ALREADY_INVITED,
       });
 
       return;
     }
 
-    if (verifyInvitedEmail) {
-      res.json({
-        result: "이미 초대 메일을 보낸 유저입니다.",
-      });
-
-      return;
-    }
-
-    const invitationToken = jwt.sign(
-      { email },
-      process.env.INVITATION_SECRET_KEY,
-      {
-        expiresIn: "2d",
-      }
-    );
+    const invitationToken = jwt.sign({ email }, INVITATION_SECRET_KEY, {
+      expiresIn: 60,
+    });
 
     const invitationUrl = `http://localhost:3000/my-travels/${id}/invitation/${invitationToken}`;
 
@@ -170,22 +167,22 @@ const inviteNewMember = async (req, res, next) => {
       },
     });
 
-    const sendMail = transporter.sendMail({
+    const mailOption = {
       from: INVITATION_MAIL,
       to: email,
       subject: "[OCN] 그룹 초대 메일",
       html: `<p> 아래 링크를 누르면 그룹으로 초대 됩니다 </p> <a href=${invitationUrl} >초대링크</a>`,
-    });
+    };
 
     currentMap.invitationList.push({
       email,
       token: invitationToken,
     });
 
-    await Promise.all([sendMail, currentMap.save()]);
+    await Promise.all([transporter.sendMail(mailOption), currentMap.save()]);
 
     res.json({
-      result: "메일 발송 성공",
+      result: RESPONSE_MESSAGE.SENDING_SUCCESS,
     });
   } catch {
     res.json({
