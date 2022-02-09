@@ -124,11 +124,12 @@ const validateToken = async (req, res, next) => {
       }
     }
 
-    if (error.name === "JsonWebTokenError") {
-      res.json({
-        result: ERROR_MESSAGE.NOT_VALID_USER,
-      });
-    }
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.UNAUTHORIZED,
+        code: 401,
+      },
+    });
   }
 };
 
