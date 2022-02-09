@@ -7,8 +7,8 @@ const getMapPoints = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const { members: mapPoints } = await Map.findById(id)
-      .populate("members")
+    const { points: mapPoints } = await Map.findById(id)
+      .populate("points")
       .lean()
       .exec();
 
