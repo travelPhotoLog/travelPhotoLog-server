@@ -54,13 +54,12 @@ const getMembers = async (req, res, next) => {
       .populate("members")
       .lean()
       .exec();
-    const members = [];
 
-    memberList.map(member => {
-      return members.push({
+    const members = memberList.map(member => {
+      return {
         profileUrl: member.profileUrl,
         nickname: member.nickname,
-      });
+      };
     });
 
     res.json({
