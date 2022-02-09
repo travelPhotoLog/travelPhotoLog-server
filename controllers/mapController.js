@@ -130,21 +130,21 @@ const inviteNewMember = async (req, res, next) => {
 
     if (!newUser) {
       res.json({
-        message: "등록되지 않은 유저입니다.",
+        result: "등록되지 않은 유저입니다.",
       });
       return;
     }
 
     if (currentMap.members.some(member => member.equals(userId))) {
       res.json({
-        message: "이미 같은 그룹 멤버입니다.",
+        result: "이미 같은 그룹 멤버입니다.",
       });
       return;
     }
 
     if (verifyInvitedEmail) {
       res.json({
-        message: "이미 초대 메일을 보낸 유저입니다.",
+        result: "이미 초대 메일을 보낸 유저입니다.",
       });
       return;
     }
