@@ -154,7 +154,7 @@ const inviteNewMember = async (req, res, next) => {
     }
 
     const invitationToken = jwt.sign({ email }, INVITATION_SECRET_KEY, {
-      expiresIn: 60,
+      expiresIn: "2d",
     });
 
     const invitationUrl = `http://localhost:3000/my-travels/${id}/invitation/${invitationToken}`;

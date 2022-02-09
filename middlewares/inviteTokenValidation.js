@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
 const Map = require("../models/Map");
 
-const { INVITATION_SECRET_KEY } = process.env;
 const { ERROR_MESSAGE } = require("../constants");
+
+const { INVITATION_SECRET_KEY } = process.env;
 
 const validateInviteToken = async (req, res, next) => {
   const { id } = req.params;
