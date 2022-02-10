@@ -133,7 +133,7 @@ const inviteNewMember = async (req, res, next) => {
     }
 
     const userId = invitedUser._id;
-    const invitedEmail = currentMap.invitationList
+    const isInvitedEmail = currentMap.invitationList
       .map(user => user.email)
       .includes(email);
 
@@ -145,7 +145,7 @@ const inviteNewMember = async (req, res, next) => {
       return;
     }
 
-    if (invitedEmail) {
+    if (isInvitedEmail) {
       res.json({
         result: RESPONSE_MESSAGE.ALREADY_INVITED,
       });

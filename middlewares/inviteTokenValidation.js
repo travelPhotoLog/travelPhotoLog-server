@@ -13,7 +13,7 @@ const validateInviteToken = async (req, res, next) => {
 
     const verifyToken = token => {
       try {
-        return jwt.verify(token, INVITATION_SECRET_KEY).hasOwnProperty("email");
+        return jwt.verify(token, INVITATION_SECRET_KEY);
       } catch {
         return false;
       }
@@ -27,7 +27,7 @@ const validateInviteToken = async (req, res, next) => {
     await currentMap.save();
 
     next();
-  } catch (error) {
+  } catch {
     res.json({
       error: {
         message: ERROR_MESSAGE.SERVER_ERROR,
