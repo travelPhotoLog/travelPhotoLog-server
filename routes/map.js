@@ -3,8 +3,10 @@ const express = require("express");
 const { validateId } = require("../middlewares/objectIdValidation");
 const { validateToken } = require("../middlewares/userValidation");
 const { validateMember } = require("../middlewares/memberValidation");
-const { validateInvitation } = require("../middlewares/inviteValidation");
-const { validateInviteToken } = require("../middlewares/inviteTokenValidation");
+const {
+  validateInvitation,
+  validateInviteToken,
+} = require("../middlewares/invitationValidation");
 
 const mapController = require("../controllers/mapController");
 
