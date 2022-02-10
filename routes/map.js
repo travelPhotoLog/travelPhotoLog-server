@@ -4,6 +4,7 @@ const { validateId } = require("../middlewares/objectIdValidation");
 const { validateToken } = require("../middlewares/userValidation");
 const { validateMember } = require("../middlewares/memberValidation");
 const { validateInvitation } = require("../middlewares/inviteValidation");
+const { validateInviteToken } = require("../middlewares/inviteTokenValidation");
 
 const mapController = require("../controllers/mapController");
 
@@ -18,6 +19,13 @@ router.get(
 );
 router.post("/new", mapController.createNewMap);
 router.get("/:id/members", validateId, mapController.getMembers);
+
+router.put(
+  "/:id/invitation",
+  validateId,
+  validateInviteToken,
+  mapController.inviteNewMember
+);
 router.put(
   "/:id/invitation/:token",
   validateId,

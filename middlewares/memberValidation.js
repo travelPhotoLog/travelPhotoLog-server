@@ -21,7 +21,7 @@ const validateMember = async (req, res, next) => {
       .lean()
       .exec();
 
-    const existMap = userMaps.find(map => map._id === id);
+    const existMap = userMaps.find(map => map._id.equals(id));
 
     if (existMap) {
       next();
