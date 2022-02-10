@@ -6,13 +6,20 @@ const getPhotos = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const { photos } = await Point.findById({ _id: id })
+    const { photos: dbPhotos } = await Point.findById(id)
       .populate("photos", "_id createdAt url description")
       .lean()
       .exec();
 
+    const photos = dbPhotos.map(({ _id: id, createdAt, url, description }) => ({
+      id,
+      createdAt,
+      url,
+      description,
+    }));
+
     res.json({ photos });
-  } catch (error) {
+  } catch {
     res.json({
       error: {
         message: ERROR_MESSAGE.SERVER_ERROR,
