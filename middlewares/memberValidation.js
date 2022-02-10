@@ -25,6 +25,7 @@ const validateMember = async (req, res, next) => {
 
     if (existMap) {
       next();
+      return;
     }
 
     res.json({

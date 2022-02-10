@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
+require("../models/Point");
 const Map = require("../models/Map");
 const User = require("../models/User");
 
