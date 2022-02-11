@@ -1,8 +1,9 @@
 const url = require("url");
-const { ERROR_MESSAGE } = require("../constants");
 
 const Comment = require("../models/Comment");
 const Photo = require("../models/Photo");
+
+const { ERROR_MESSAGE } = require("../constants");
 
 const deleteComment = async (req, res, next) => {
   const { id: commentId } = req.params;
@@ -21,8 +22,10 @@ const deleteComment = async (req, res, next) => {
 
     photo.comments = photoComments;
 
-    await photo.save();
-    await Comment.deleteOne({ _id: commentId }).exec();
+    await Promise.all([
+      photo.save(),
+      Comment.deleteOne({ _id: commentId }).exec(),
+    ]);
 
     res.json({
       result: "ok",
