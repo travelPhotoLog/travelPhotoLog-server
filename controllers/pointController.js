@@ -1,12 +1,14 @@
+const url = require("url");
+
 require("../models/Photo");
 const Point = require("../models/Point");
 const { ERROR_MESSAGE } = require("../constants");
 
 const getPhotos = async (req, res, next) => {
-  const { id } = req.params;
+  const { latitude, logitude } = url.parse(req.url, true).query;
 
   try {
-    const { photos: dbPhotos } = await Point.findById(id)
+    const { photos: dbPhotos } = await Point.findOne({ latitude }, { logitude })
       .populate("photos", "_id createdAt url description")
       .lean()
       .exec();
