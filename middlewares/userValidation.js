@@ -49,7 +49,7 @@ const validateToken = async (req, res, next) => {
     res.locals.newAccessToken = newAccessToken;
 
     res.cookie("accessToken", newAccessToken, {
-      maxAge: 60 * 60 * 1000,
+      maxAge: 14 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
 
@@ -64,6 +64,7 @@ const validateToken = async (req, res, next) => {
       await user.save();
 
       next();
+      return;
     } catch (error) {
       res.json({
         error: {
@@ -80,6 +81,7 @@ const validateToken = async (req, res, next) => {
     jwt.verify(accessToken, ACCESS_SECRET_KEY);
 
     next();
+    return;
   } catch (error) {
     if (error.name === "TokenExpiredError") {
       try {
@@ -93,11 +95,12 @@ const validateToken = async (req, res, next) => {
         res.locals.newAccessToken = newAccessToken;
 
         res.cookie("accessToken", newAccessToken, {
-          maxAge: 60 * 60 * 1000,
+          maxAge: 14 * 24 * 60 * 60 * 1000,
           httpOnly: true,
         });
 
         next();
+        return;
       } catch (error) {
         if (error.name === "TokenExpiredError") {
           try {
@@ -112,6 +115,8 @@ const validateToken = async (req, res, next) => {
             res.json({
               message: ERROR_MESSAGE.RELOGIN_NEEDED,
             });
+
+            return;
           } catch {
             res.json({
               error: {
@@ -119,6 +124,8 @@ const validateToken = async (req, res, next) => {
                 code: 500,
               },
             });
+
+            return;
           }
         }
       }

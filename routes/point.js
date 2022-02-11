@@ -1,10 +1,9 @@
 const express = require("express");
 
 const pointController = require("../controllers/pointController");
-const { validateId } = require("../middlewares/objectIdValidation");
 
 const router = express.Router();
 
-router.get("/:id/photos", validateId, pointController.getPhotos);
+router.get("/photos", pointController.getPhotos);
 
 module.exports = router;

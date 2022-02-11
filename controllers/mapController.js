@@ -20,7 +20,7 @@ const getMapPoints = async (req, res, next) => {
       .exec();
 
     res.json({ mapPoints });
-  } catch (error) {
+  } catch {
     res.json({
       error: {
         message: ERROR_MESSAGE.SERVER_ERROR,

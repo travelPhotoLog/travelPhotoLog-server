@@ -13,6 +13,7 @@ const auth = require("./routes/auth");
 const user = require("./routes/user");
 const map = require("./routes/map");
 const point = require("./routes/point");
+const photo = require("./routes/photo");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/auth", auth);
 app.use("/user", user);
 app.use("/map", map);
 app.use("/point", point);
+app.use("/photo", photo);
 
 app.use((req, res, next) => {
   next(createError(404, ERROR_MESSAGE.NOT_FOUND));
