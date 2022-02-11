@@ -11,6 +11,8 @@ const ERROR_MESSAGE = Object.freeze({
   FORBIDDEN: "해당 페이지에 접근 권한이 없습니다.",
   UNAUTHORIZED: "인증되지 않은 유저입니다.",
   NOT_VALID_USER: "해당 유저가 존재하지 않습니다.",
+  MESSAGE_REQUIRED: "message는 필수 입력란 입니다.",
+  LENGTH_LIMIT: "message는 50까지 입력할 수 있습니다.",
 });
 
 const RESPONSE_MESSAGE = Object.freeze({
