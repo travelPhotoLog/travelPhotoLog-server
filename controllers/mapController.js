@@ -42,7 +42,9 @@ const createNewMap = async (req, res, next) => {
 
     await Promise.all([newMap.save(), currentUser.save()]);
 
-    res.json({ result: "ok" });
+    res.json({
+      result: "ok",
+    });
   } catch (error) {
     res.json({
       error: {

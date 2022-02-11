@@ -59,7 +59,9 @@ const postSignUp = async (req, res, next) => {
   try {
     await User.create(user);
 
-    res.send({ result: "ok" });
+    res.send({
+      result: "ok",
+    });
   } catch (error) {
     if (error.name === "MongoServerError" && error.code === 11000) {
       res.json({
