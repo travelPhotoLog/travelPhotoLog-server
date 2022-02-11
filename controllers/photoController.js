@@ -9,18 +9,15 @@ const deletePhoto = async (req, res, next) => {
   const { point: pointId } = url.parse(req.url, true).query;
 
   try {
-    const photo = await Photo.findByIdAndDelete(photoId).exec();
-    const point = await Point.findById(pointId)
-      .populate("photos", "url")
-      .exec();
+    const point = await Point.findById(pointId).exec();
 
     const pointPhotos = point.photos;
 
     if (pointPhotos.length === 1) {
-      await Point.deleteOne({ _id: pointId });
+      await Point.deleteOne({ _id: pointId }).exec();
     } else {
       for (let i = 0; i < pointPhotos.length; i++) {
-        if (pointPhotos[i].url === photo.url) {
+        if (pointPhotos[i].equals(photoId)) {
           pointPhotos.splice(i, 1);
           break;
         }
@@ -28,6 +25,7 @@ const deletePhoto = async (req, res, next) => {
 
       point.photos = pointPhotos;
 
+      await Photo.deleteOne({ _id: photoId }).exec();
       await point.save();
     }
 

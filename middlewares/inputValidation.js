@@ -19,6 +19,16 @@ const signUpInputValidators = [
     .withMessage(ERROR_MESSAGE.PROFILE_URL_REQUIRED),
 ];
 
+const commentInputValidator = [
+  body("comment.message")
+    .exists()
+    .trim()
+    .notEmpty()
+    .withMessage(ERROR_MESSAGE.MESSAGE_REQUIRED)
+    .isLength({ max: 50 })
+    .withMessage(ERROR_MESSAGE.LENGTH_LIMIT),
+];
+
 const validate = validations => {
   return async (req, res, next) => {
     await Promise.all(validations.map(validation => validation.run(req)));
@@ -47,5 +57,6 @@ const validate = validations => {
   };
 };
 
+exports.commentInputValidator = commentInputValidator;
 exports.signUpInputValidators = signUpInputValidators;
 exports.validate = validate;
