@@ -16,7 +16,7 @@ const deletePhoto = async (req, res, next) => {
 
     const pointPhotos = point.photos;
 
-    if (!pointPhotos.length) {
+    if (pointPhotos.length === 1) {
       await Point.deleteOne({ _id: pointId });
     } else {
       for (let i = 0; i < pointPhotos.length; i++) {
@@ -34,7 +34,7 @@ const deletePhoto = async (req, res, next) => {
     res.json({
       result: "ok",
     });
-  } catch (error) {
+  } catch {
     res.json({
       error: {
         message: ERROR_MESSAGE.SERVER_ERROR,

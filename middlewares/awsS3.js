@@ -48,7 +48,7 @@ const deleteServerImg = async (req, res, next) => {
   try {
     const { url } = await Photo.findById(photoId).exec();
     const devidedUrl = url.split("/");
-    const key = devidedUrl[devidedUrl.length - 1];
+    const key = devidedUrl.pop();
 
     s3.deleteObject(
       {

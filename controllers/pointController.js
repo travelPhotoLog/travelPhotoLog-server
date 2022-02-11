@@ -10,6 +10,7 @@ const getPhotos = async (req, res, next) => {
   try {
     const { photos: dbPhotos } = await Point.findOne({ latitude }, { logitude })
       .populate("photos", "_id createdAt url description")
+      .sort({ createdAt: -1 })
       .lean()
       .exec();
 
