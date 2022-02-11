@@ -17,7 +17,9 @@ const addComment = async (req, res, next) => {
 
     await Promise.all([newComment.save(), currentPhoto.save()]);
 
-    res.json({ result: "ok" });
+    res.json({
+      result: "ok",
+    });
   } catch {
     res.json({
       error: {
@@ -50,7 +52,9 @@ const deleteComment = async (req, res, next) => {
       Comment.deleteOne({ _id: commentId }).exec(),
     ]);
 
-    res.json({ result: "ok" });
+    res.json({
+      result: "ok",
+    });
   } catch {
     res.json({
       error: {
