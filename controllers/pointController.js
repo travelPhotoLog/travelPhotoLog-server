@@ -9,17 +9,33 @@ const getPhotos = async (req, res, next) => {
 
   try {
     const { photos: dbPhotos } = await Point.findOne({ latitude, longitude })
-      .populate("photos", "_id createdAt url description")
+      .populate({
+        path: "photos",
+        populate: { path: "comments", model: "Comment" },
+      })
       .lean()
       .exec();
 
     const photos = dbPhotos
-      .map(({ _id: id, createdAt, url, description }) => ({
-        id,
-        createdAt,
-        url,
-        description,
-      }))
+      .map(
+        ({
+          _id: id,
+          createdAt,
+          createdBy,
+          url,
+          placeName,
+          description,
+          comments,
+        }) => ({
+          id,
+          createdAt,
+          createdBy,
+          url,
+          placeName,
+          description,
+          comments,
+        })
+      )
       .sort((a, b) => b.createdAt - a.createdAt);
 
     res.json({ photos });
