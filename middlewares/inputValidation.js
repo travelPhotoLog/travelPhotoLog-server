@@ -44,7 +44,7 @@ const pointValidators = [
   body("point.photos")
     .exists()
     .isLength({ min: 1, max: undefined })
-    .withMessage(ERROR_MESSAGE.MUST_HAVE_MIN_ONE_PHOTO),
+    .withMessage(ERROR_MESSAGE.PHOTO_REQUIRED),
 ];
 
 const photoValidators = [
