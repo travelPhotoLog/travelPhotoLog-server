@@ -5,21 +5,22 @@ const Point = require("../models/Point");
 const { ERROR_MESSAGE } = require("../constants");
 
 const getPhotos = async (req, res, next) => {
-  const { latitude, logitude } = url.parse(req.url, true).query;
+  const { latitude, longitude } = url.parse(req.url, true).query;
 
   try {
-    const { photos: dbPhotos } = await Point.findOne({ latitude }, { logitude })
+    const { photos: dbPhotos } = await Point.findOne({ latitude, longitude })
       .populate("photos", "_id createdAt url description")
-      .sort({ createdAt: -1 })
       .lean()
       .exec();
 
-    const photos = dbPhotos.map(({ _id: id, createdAt, url, description }) => ({
-      id,
-      createdAt,
-      url,
-      description,
-    }));
+    const photos = dbPhotos
+      .map(({ _id: id, createdAt, url, description }) => ({
+        id,
+        createdAt,
+        url,
+        description,
+      }))
+      .sort((a, b) => b.createdAt - a.createdAt);
 
     res.json({ photos });
   } catch {
