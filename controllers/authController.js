@@ -59,7 +59,7 @@ const postSignUp = async (req, res, next) => {
   try {
     await User.create(user);
 
-    res.send({
+    res.json({
       result: "ok",
     });
   } catch (error) {
