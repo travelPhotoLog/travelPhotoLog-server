@@ -4,23 +4,6 @@ const Photo = require("../models/Photo");
 const Point = require("../models/Point");
 const { ERROR_MESSAGE } = require("../constants");
 
-const getPhoto = async (req, res, next) => {
-  const { id } = req.params;
-
-  try {
-    const photo = await Photo.findById(id).populate("comments").lean().exec();
-
-    res.json({ photo });
-  } catch {
-    res.json({
-      error: {
-        message: ERROR_MESSAGE.SERVER_ERROR,
-        code: 500,
-      },
-    });
-  }
-};
-
 const deletePhoto = async (req, res, next) => {
   const { id: photoId } = req.params;
   const { point: pointId } = url.parse(req.url, true).query;
@@ -61,6 +44,5 @@ const deletePhoto = async (req, res, next) => {
 
 const uploadPhoto = (req, res, next) => {};
 
-exports.getPhoto = getPhoto;
 exports.deletePhoto = deletePhoto;
 exports.uploadPhoto = uploadPhoto;
