@@ -29,6 +29,44 @@ const commentInputValidator = [
     .withMessage(ERROR_MESSAGE.LENGTH_LIMIT),
 ];
 
+const pointValidators = [
+  body("point.latitude")
+    .exists()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage(ERROR_MESSAGE.MUST_BE_IN_LIMIT),
+  body("point.longitude")
+    .exists()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage(ERROR_MESSAGE.MUST_BE_IN_LIMIT),
+  body("point.placeName")
+    .exists()
+    .withMessage(ERROR_MESSAGE.PLACENAME_REQUIRED),
+  body("point.photos")
+    .exists()
+    .isLength({ min: 1, max: undefined })
+    .withMessage(ERROR_MESSAGE.PHOTO_REQUIRED),
+];
+
+const photoValidators = [
+  body("photo.createdAt")
+    .exists()
+    .isDate()
+    .isBefore(new Date())
+    .withMessage(ERROR_MESSAGE.VALID_DATE_REQUIRED),
+  body("photo.url")
+    .exists()
+    .trim()
+    .isURL()
+    .withMessage(ERROR_MESSAGE.URL_REQUIRED),
+  body("point.placeName")
+    .exists()
+    .withMessage(ERROR_MESSAGE.PLACENAME_REQUIRED),
+  body("point.point")
+    .exists()
+    .isObject()
+    .withMessage(ERROR_MESSAGE.POINT_REQUIRED),
+];
+
 const validate = validations => {
   return async (req, res, next) => {
     await Promise.all(validations.map(validation => validation.run(req)));
@@ -59,4 +97,6 @@ const validate = validations => {
 
 exports.commentInputValidator = commentInputValidator;
 exports.signUpInputValidators = signUpInputValidators;
+exports.pointValidators = pointValidators;
+exports.photoValidators = photoValidators;
 exports.validate = validate;

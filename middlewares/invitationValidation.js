@@ -61,5 +61,5 @@ const validateInviteToken = async (req, res, next) => {
   }
 };
 
-exports.validateInviteToken = validateInviteToken;
 exports.validateInvitation = validateInvitation;
+exports.validateInviteToken = validateInviteToken;

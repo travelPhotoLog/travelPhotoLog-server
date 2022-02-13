@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGODB_URL).catch(error => {
 
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.set("views", path.join(__dirname, "views"));

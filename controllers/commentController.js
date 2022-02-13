@@ -6,13 +6,14 @@ const Photo = require("../models/Photo");
 const { ERROR_MESSAGE } = require("../constants");
 
 const addComment = async (req, res, next) => {
-  const { comment, photo } = req.body;
+
+  const { comment, photo: photoId } = req.body;
 
   try {
     const newComment = new Comment(comment);
     const commentId = newComment._id;
 
-    const currentPhoto = await Photo.findById(photo).exec();
+    const currentPhoto = await Photo.findById(photoId).exec();
     currentPhoto.comments.push(commentId);
 
     await Promise.all([newComment.save(), currentPhoto.save()]);
