@@ -7,6 +7,51 @@ const Comment = require("../models/Comment");
 
 const { ERROR_MESSAGE } = require("../constants");
 
+const getPhotos = async (req, res, next) => {
+  const { id: photoId } = req.params;
+  try {
+    const { point: pointId } = await Photo.findById(photoId).exec();
+    const { photos: dbPhotos } = await Point.findById(pointId)
+      .populate({
+        path: "photos",
+        populate: { path: "comments", model: "Comment" },
+      })
+      .lean()
+      .exec();
+
+    const photos = dbPhotos
+      .map(
+        ({
+          _id: id,
+          createdAt,
+          createdBy,
+          url,
+          placeName,
+          description,
+          comments,
+        }) => ({
+          id,
+          createdAt,
+          createdBy,
+          url,
+          placeName,
+          description,
+          comments,
+        })
+      )
+      .sort((a, b) => b.createdAt - a.createdAt);
+
+    res.json({ photos });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 const uploadPhoto = async (req, res, next) => {
   const { photo, point, description, map } = req.body;
   const { createdAt, createdBy } = JSON.parse(photo);
@@ -75,10 +120,10 @@ const deletePhoto = async (req, res, next) => {
   const { map: mapId } = url.parse(req.url, true).query;
 
   try {
-    const [currentMap, currentPhoto] = await Promise.all([
-      Map.findById(mapId).exec(),
-      Photo.findById(photoId).populate("comments").exec(),
-    ]);
+    const currentMap = await Map.findById(mapId).exec();
+    const currentPhoto = await Photo.findById(photoId)
+      .populate("comments")
+      .exec();
 
     const { points: pointsInMap, photos: photosInMap } = currentMap;
     const { comments, point: pointInPhoto } = currentPhoto;
@@ -86,7 +131,7 @@ const deletePhoto = async (req, res, next) => {
     const { photos: photosInPoint } = currentPoint;
 
     const deleteCommentFn = async comment => {
-      await Comment.findByIdAndDelete(comment);
+      await Comment.deleteOne(comment);
     };
 
     for (let i = 0; i < comments.length; i++) {
@@ -104,8 +149,8 @@ const deletePhoto = async (req, res, next) => {
 
     if (photosInPoint.length === 1) {
       await Promise.all([
-        Photo.findByIdAndDelete(photoId),
-        Point.findByIdAndDelete(pointInPhoto),
+        Photo.deleteOne(photoId),
+        Point.deleteOne(pointInPhoto),
         currentMap.save(),
       ]);
 
@@ -140,5 +185,6 @@ const deletePhoto = async (req, res, next) => {
   }
 };
 
+exports.getPhotos = getPhotos;
 exports.uploadPhoto = uploadPhoto;
 exports.deletePhoto = deletePhoto;

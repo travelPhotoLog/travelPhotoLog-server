@@ -14,5 +14,6 @@ router.post(
   photoController.uploadPhoto
 );
 router.delete("/:id", deleteServerImg, photoController.deletePhoto);
+router.get("/:id", photoController.getPhotos);
 
 module.exports = router;
