@@ -9,12 +9,12 @@ const getPostings = async (req, res, next) => {
   const page = parseInt(req.query.page, 10) || "0";
 
   try {
-    const countPostings = await Posting.countDocuments({}).exec();
+    const postingCount = await Posting.countDocuments({}).exec();
     const totalPostings = await Posting.find({}).exec();
-    const startIndex = countPostings - pageSize * (page - 1);
-    const endIndex = countPostings - pageSize * page;
+    const startIndex = postingCount - pageSize * (page - 1);
+    const endIndex = postingCount - pageSize * page;
 
-    if (countPostings - pageSize * (page - 1) <= pageSize) {
+    if (postingCount - pageSize * (page - 1) <= pageSize) {
       postings = totalPostings.slice(0, startIndex).reverse();
     } else {
       postings = totalPostings.slice(endIndex, startIndex).reverse();
@@ -22,7 +22,7 @@ const getPostings = async (req, res, next) => {
 
     res.json({
       postings,
-      totalPages: Math.ceil(countPostings / pageSize),
+      totalPages: Math.ceil(postingCount / pageSize),
     });
   } catch {
     res.json({
