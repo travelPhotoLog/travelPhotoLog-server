@@ -6,6 +6,7 @@ const Photo = require("../models/Photo");
 const { ERROR_MESSAGE } = require("../constants");
 
 const addComment = async (req, res, next) => {
+
   const { comment, photo: photoId } = req.body;
 
   try {
