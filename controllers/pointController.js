@@ -8,6 +8,13 @@ const getPhotos = async (req, res, next) => {
   const { latitude, longitude } = url.parse(req.url, true).query;
 
   try {
+    const point = await Point.findOne({ latitude, longitude }).exec();
+
+    if (!point) {
+      res.json({ photos: [] });
+      return;
+    }
+
     const { photos: dbPhotos } = await Point.findOne({ latitude, longitude })
       .populate({
         path: "photos",

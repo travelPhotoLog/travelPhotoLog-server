@@ -58,13 +58,33 @@ const photoValidators = [
     .trim()
     .isURL()
     .withMessage(ERROR_MESSAGE.URL_REQUIRED),
-  body("point.placeName")
+  body("photo.placeName")
     .exists()
     .withMessage(ERROR_MESSAGE.PLACENAME_REQUIRED),
-  body("point.point")
+  body("photo.point")
     .exists()
     .isObject()
     .withMessage(ERROR_MESSAGE.POINT_REQUIRED),
+];
+
+const postingInputValidators = [
+  body("posting.title")
+    .trim()
+    .notEmpty()
+    .withMessage(ERROR_MESSAGE.TITLE_REQUIRED),
+  body("posting.content")
+    .exists()
+    .trim()
+    .notEmpty()
+    .withMessage(ERROR_MESSAGE.MESSAGE_REQUIRED),
+  body("posting.hashtags")
+    .exists()
+    .isLength({ min: 1, max: 5 })
+    .withMessage(ERROR_MESSAGE.HASHTAGS_COUNT_LIMIT),
+  body("posting.regions")
+    .exists()
+    .isLength({ min: 1, max: 3 })
+    .withMessage(ERROR_MESSAGE.REGIONS_COUNT_LIMIT),
 ];
 
 const validate = validations => {
@@ -99,4 +119,5 @@ exports.commentInputValidator = commentInputValidator;
 exports.signUpInputValidators = signUpInputValidators;
 exports.pointValidators = pointValidators;
 exports.photoValidators = photoValidators;
+exports.postingInputValidators = postingInputValidators;
 exports.validate = validate;
