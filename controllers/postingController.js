@@ -5,19 +5,19 @@ const { ERROR_MESSAGE } = require("../constants");
 
 const getPostings = async (req, res, next) => {
   let postings;
-  const pageSize = 5;
+  const pageSize = 8;
   const page = parseInt(req.query.page, 10) || "0";
 
   try {
     const countPostings = await Posting.countDocuments({}).exec();
     const totalPostings = await Posting.find({}).exec();
-    const startPosting = countPostings - pageSize * (page - 1);
-    const endPosting = countPostings - pageSize * page;
+    const startIndex = countPostings - pageSize * (page - 1);
+    const endIndex = countPostings - pageSize * page;
 
     if (countPostings - pageSize * (page - 1) <= pageSize) {
-      postings = totalPostings.slice(0, startPosting).reverse();
+      postings = totalPostings.slice(0, startIndex).reverse();
     } else {
-      postings = totalPostings.slice(endPosting, startPosting).reverse();
+      postings = totalPostings.slice(endIndex, startIndex).reverse();
     }
 
     res.json({
@@ -35,45 +35,45 @@ const getPostings = async (req, res, next) => {
 };
 
 const searchPostings = async (req, res, next) => {
-  const pageSize = 3;
+  const pageSize = 8;
   const { region, hashtag, page } = req.query;
 
-  let countFilteredPostings;
+  let filteredPostingCount;
   let filteredPostings;
   let totalFilteredPostings;
 
   try {
     if (region && hashtag) {
-      [countFilteredPostings, filteredPostings] = await Promise.all([
+      [filteredPostingCount, filteredPostings] = await Promise.all([
         Posting.countDocuments({ regions: region, hashtags: hashtag.trim() }),
         Posting.find({ regions: region, hashtags: hashtag.trim() }),
       ]);
     } else if (region && !hashtag) {
-      [countFilteredPostings, filteredPostings] = await Promise.all([
+      [filteredPostingCount, filteredPostings] = await Promise.all([
         Posting.countDocuments({ regions: region }),
         Posting.find({ regions: region }),
       ]);
     } else {
-      [countFilteredPostings, filteredPostings] = await Promise.all([
+      [filteredPostingCount, filteredPostings] = await Promise.all([
         Posting.countDocuments({ hashtags: hashtag.trim() }),
         Posting.find({ hashtags: hashtag.trim() }),
       ]);
     }
 
-    const startPosting = countFilteredPostings - pageSize * (page - 1);
-    const endPosting = countFilteredPostings - pageSize * page;
+    const startIndex = filteredPostingCount - pageSize * (page - 1);
+    const endIndex = filteredPostingCount - pageSize * page;
 
-    if (countFilteredPostings - pageSize * (page - 1) <= pageSize) {
-      totalFilteredPostings = filteredPostings.slice(0, startPosting).reverse();
+    if (filteredPostingCount - pageSize * (page - 1) <= pageSize) {
+      totalFilteredPostings = filteredPostings.slice(0, startIndex).reverse();
     } else {
       totalFilteredPostings = filteredPostings
-        .slice(endPosting, startPosting)
+        .slice(endIndex, startIndex)
         .reverse();
     }
 
     res.json({
       postings: totalFilteredPostings,
-      totalPages: Math.ceil(countFilteredPostings / pageSize),
+      totalPages: Math.ceil(filteredPostingCount / pageSize),
     });
   } catch {
     res.json({
