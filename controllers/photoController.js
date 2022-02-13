@@ -75,10 +75,10 @@ const deletePhoto = async (req, res, next) => {
   const { map: mapId } = url.parse(req.url, true).query;
 
   try {
-    const [currentMap, currentPhoto] = await Promise.all([
-      Map.findById(mapId).exec(),
-      Photo.findById(photoId).populate("comments").exec(),
-    ]);
+    const currentMap = await Map.findById(mapId).exec();
+    const currentPhoto = await Photo.findById(photoId)
+      .populate("comments")
+      .exec();
 
     const { points: pointsInMap, photos: photosInMap } = currentMap;
     const { comments, point: pointInPhoto } = currentPhoto;
@@ -86,7 +86,7 @@ const deletePhoto = async (req, res, next) => {
     const { photos: photosInPoint } = currentPoint;
 
     const deleteCommentFn = async comment => {
-      await Comment.findByIdAndDelete(comment);
+      await Comment.deleteOne(comment);
     };
 
     for (let i = 0; i < comments.length; i++) {
@@ -104,8 +104,8 @@ const deletePhoto = async (req, res, next) => {
 
     if (photosInPoint.length === 1) {
       await Promise.all([
-        Photo.findByIdAndDelete(photoId),
-        Point.findByIdAndDelete(pointInPhoto),
+        Photo.deleteOne(photoId),
+        Point.deleteOne(pointInPhoto),
         currentMap.save(),
       ]);
 
