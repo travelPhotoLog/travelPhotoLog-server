@@ -9,7 +9,7 @@ const { ERROR_MESSAGE } = require("../constants");
 
 const uploadPhoto = async (req, res, next) => {
   const { photo, point, description, map } = req.body;
-  const { createdAt, createdBy } = JSON.parse(photo);
+  const { date, createdBy } = JSON.parse(photo);
   const { latitude, longitude, placeName } = JSON.parse(point);
 
   try {
@@ -18,7 +18,7 @@ const uploadPhoto = async (req, res, next) => {
       Map.findById(map).exec(),
     ]);
     const newPhoto = new Photo({
-      createdAt,
+      date,
       createdBy,
       url: req.file.location,
       placeName,

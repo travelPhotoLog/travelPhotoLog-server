@@ -10,6 +10,30 @@ const { ERROR_MESSAGE, RESPONSE_MESSAGE } = require("../constants");
 const { INVITATION_SECRET_KEY, INVITATION_MAIL, INVITATION_PASSWORD } =
   process.env;
 
+const getMapPhotos = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const { photos: mapPhotos } = await Map.findById(id)
+      .populate("photos", "url date")
+      .lean()
+      .exec();
+
+    const photos = mapPhotos
+      .sort((a, b) => b.date - a.date)
+      .map(photo => photo.url);
+
+    res.json({ photos });
+  } catch (error) {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 const getMapPoints = async (req, res, next) => {
   const { id } = req.params;
 
@@ -197,6 +221,7 @@ const inviteNewMember = async (req, res, next) => {
   }
 };
 
+exports.getMapPhotos = getMapPhotos;
 exports.getMapPoints = getMapPoints;
 exports.createNewMap = createNewMap;
 exports.getMembers = getMembers;

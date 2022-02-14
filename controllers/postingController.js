@@ -34,6 +34,25 @@ const getPostings = async (req, res, next) => {
   }
 };
 
+const getPostingDetail = async (req, res, next) => {
+  const { id: postingId } = req.params;
+
+  try {
+    const posting = await Posting.findById(postingId).lean().exec();
+
+    res.json({
+      posting,
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 const searchPostings = async (req, res, next) => {
   const pageSize = 8;
   const { region, hashtag, page } = req.query;
@@ -110,6 +129,31 @@ const createPosting = async (req, res, next) => {
   }
 };
 
+const deletePosting = async (req, res, next) => {
+  const { id: postingId } = req.params;
+  const userId = req.query.user;
+
+  try {
+    await Promise.all([
+      User.updateOne({ _id: userId }, { $pull: { myPostings: postingId } }),
+      Posting.deleteOne({ _id: postingId }),
+    ]);
+
+    res.json({
+      result: "ok",
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 exports.getPostings = getPostings;
+exports.getPostingDetail = getPostingDetail;
 exports.searchPostings = searchPostings;
 exports.createPosting = createPosting;
+exports.deletePosting = deletePosting;
