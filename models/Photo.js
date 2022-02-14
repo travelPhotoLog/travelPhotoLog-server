@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { isURL } = require("validator");
 
 const PhotoSchema = new mongoose.Schema({
-  createdAt: {
+  date: {
     type: Date,
     required: true,
     validate: {
