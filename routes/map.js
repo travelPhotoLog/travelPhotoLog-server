@@ -12,6 +12,8 @@ const mapController = require("../controllers/mapController");
 
 const router = express.Router();
 
+router.get("/:id/photos", validateId, mapController.getMapPhotos);
+
 router.get(
   "/:id/points",
   validateId,
