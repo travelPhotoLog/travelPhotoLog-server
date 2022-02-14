@@ -18,5 +18,6 @@ router.post(
   validate(postingInputValidators),
   postingController.createPosting
 );
+router.delete("/:id", validateId, postingController.deletePosting);
 
 module.exports = router;
