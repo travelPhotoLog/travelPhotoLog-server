@@ -27,7 +27,7 @@ const getPhotos = async (req, res, next) => {
       .map(
         ({
           _id: id,
-          createdAt,
+          date,
           createdBy,
           url,
           placeName,
@@ -35,7 +35,7 @@ const getPhotos = async (req, res, next) => {
           comments,
         }) => ({
           id,
-          createdAt,
+          date,
           createdBy,
           url,
           placeName,
@@ -43,7 +43,7 @@ const getPhotos = async (req, res, next) => {
           comments,
         })
       )
-      .sort((a, b) => b.createdAt - a.createdAt);
+      .sort((a, b) => b.date - a.date);
 
     res.json({ photos });
   } catch {
