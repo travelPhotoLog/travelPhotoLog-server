@@ -1,14 +1,13 @@
 require("dotenv").config();
 
-const path = require("path");
-
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
 const express = require("express");
-const createError = require("http-errors");
 const mongoose = require("mongoose");
+const path = require("path");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const createError = require("http-errors");
 
-const ERROR_MESSAGE = require("./constants");
+const { ERROR_MESSAGE } = require("./constants");
 const auth = require("./routes/auth");
 const user = require("./routes/user");
 const map = require("./routes/map");
