@@ -1,30 +1,38 @@
 const Posting = require("../models/Posting");
 const User = require("../models/User");
 
-const { ERROR_MESSAGE } = require("../constants");
+const { PAGE_SIZE, ERROR_MESSAGE } = require("../constants");
 
 const getPostings = async (req, res, next) => {
-  let postings;
-  const pageSize = 8;
-  const page = parseInt(req.query.page, 10) || "0";
+  const pageNum = parseInt(req.query.page, 10);
+  const pageSize = PAGE_SIZE;
 
   try {
-    const postingCount = await Posting.countDocuments({}).exec();
-    const totalPostings = await Posting.find({}).exec();
-    const startIndex = postingCount - pageSize * (page - 1);
-    const endIndex = postingCount - pageSize * page;
-
-    if (postingCount - pageSize * (page - 1) <= pageSize) {
-      postings = totalPostings.slice(0, startIndex).reverse();
-    } else {
-      postings = totalPostings.slice(endIndex, startIndex).reverse();
+    if (!pageNum) {
+      throw new Error(ERROR_MESSAGE.BAD_REQUEST);
     }
+
+    const postings = await Posting.find()
+      .skip(pageSize * (pageNum - 1))
+      .limit(pageSize)
+      .lean()
+      .exec();
 
     res.json({
       postings,
-      totalPages: Math.ceil(postingCount / pageSize),
     });
-  } catch {
+  } catch (error) {
+    if (error.message === ERROR_MESSAGE.BAD_REQUEST) {
+      res.json({
+        error: {
+          message: ERROR_MESSAGE.BAD_REQUEST,
+          code: 400,
+        },
+      });
+
+      return;
+    }
+
     res.json({
       error: {
         message: ERROR_MESSAGE.SERVER_ERROR,
