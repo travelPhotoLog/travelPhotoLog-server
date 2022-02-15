@@ -6,7 +6,6 @@ const Photo = require("../models/Photo");
 const { ERROR_MESSAGE } = require("../constants");
 
 const addComment = async (req, res, next) => {
-
   const { comment, photo: photoId } = req.body;
 
   try {
@@ -18,8 +17,13 @@ const addComment = async (req, res, next) => {
 
     await Promise.all([newComment.save(), currentPhoto.save()]);
 
+    const { comments } = await Photo.findById(photoId)
+      .populate("comments")
+      .lean()
+      .exec();
+
     res.json({
-      result: "ok",
+      comments,
     });
   } catch {
     res.json({
@@ -53,8 +57,13 @@ const deleteComment = async (req, res, next) => {
       Comment.deleteOne({ _id: commentId }).exec(),
     ]);
 
+    const { comments } = await Photo.findById(photoId)
+      .populate("comments")
+      .lean()
+      .exec();
+
     res.json({
-      result: "ok",
+      comments,
     });
   } catch {
     res.json({
