@@ -79,11 +79,11 @@ const postingInputValidators = [
     .withMessage(ERROR_MESSAGE.MESSAGE_REQUIRED),
   body("posting.hashtags")
     .exists()
-    .isLength({ min: 1, max: 5 })
+    .isArray({ min: 1, max: 5 })
     .withMessage(ERROR_MESSAGE.HASHTAGS_COUNT_LIMIT),
   body("posting.regions")
     .exists()
-    .isLength({ min: 1, max: 3 })
+    .isArray({ min: 1, max: 3 })
     .withMessage(ERROR_MESSAGE.REGIONS_COUNT_LIMIT),
 ];
 

@@ -12,12 +12,19 @@ const router = express.Router();
 
 router.get("/", postingController.getPostings);
 router.get("/:id", validateId, postingController.getPostingDetail);
+router.put(
+  "/:id",
+  validateId,
+  validate(postingInputValidators),
+  postingController.updatePosting
+);
+router.delete("/:id", validateId, postingController.deletePosting);
+
 router.get("/search", postingController.searchPostings);
 router.post(
   "/new",
   validate(postingInputValidators),
   postingController.createPosting
 );
-router.delete("/:id", validateId, postingController.deletePosting);
 
 module.exports = router;

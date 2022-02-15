@@ -53,6 +53,85 @@ const getPostingDetail = async (req, res, next) => {
   }
 };
 
+const createPosting = async (req, res, next) => {
+  const { posting, user: userId } = req.body;
+
+  try {
+    const newPosting = await new Posting(posting);
+    const currentUser = await User.findById(userId).exec();
+
+    const newPostingId = newPosting._id;
+    currentUser.myPostings.push(newPostingId);
+
+    await Promise.all([currentUser.save(), newPosting.save()]);
+
+    res.json({
+      result: "ok",
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
+const updatePosting = async (req, res, next) => {
+  const { id: postingId } = req.params;
+  const { posting } = req.body;
+
+  const { title, content, hashtags, regions, logOption } = posting;
+
+  try {
+    await Posting.updateOne(
+      { _id: postingId },
+      {
+        title,
+        content,
+        hashtags,
+        regions,
+        logOption,
+      }
+    );
+
+    res.json({
+      result: "ok",
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
+const deletePosting = async (req, res, next) => {
+  const { id: postingId } = req.params;
+  const userId = req.query.user;
+
+  try {
+    await Promise.all([
+      User.updateOne({ _id: userId }, { $pull: { myPostings: postingId } }),
+      Posting.deleteOne({ _id: postingId }),
+    ]);
+
+    res.json({
+      result: "ok",
+    });
+  } catch {
+    res.json({
+      error: {
+        message: ERROR_MESSAGE.SERVER_ERROR,
+        code: 500,
+      },
+    });
+  }
+};
+
 const searchPostings = async (req, res, next) => {
   const pageSize = 8;
   const { region, hashtag, page } = req.query;
@@ -104,56 +183,9 @@ const searchPostings = async (req, res, next) => {
   }
 };
 
-const createPosting = async (req, res, next) => {
-  const { posting, user: userId } = req.body;
-
-  try {
-    const newPosting = await new Posting(posting);
-    const currentUser = await User.findById(userId).exec();
-
-    const newPostingId = newPosting._id;
-    currentUser.myPostings.push(newPostingId);
-
-    await Promise.all([currentUser.save(), newPosting.save()]);
-
-    res.json({
-      result: "ok",
-    });
-  } catch {
-    res.json({
-      error: {
-        message: ERROR_MESSAGE.SERVER_ERROR,
-        code: 500,
-      },
-    });
-  }
-};
-
-const deletePosting = async (req, res, next) => {
-  const { id: postingId } = req.params;
-  const userId = req.query.user;
-
-  try {
-    await Promise.all([
-      User.updateOne({ _id: userId }, { $pull: { myPostings: postingId } }),
-      Posting.deleteOne({ _id: postingId }),
-    ]);
-
-    res.json({
-      result: "ok",
-    });
-  } catch {
-    res.json({
-      error: {
-        message: ERROR_MESSAGE.SERVER_ERROR,
-        code: 500,
-      },
-    });
-  }
-};
-
 exports.getPostings = getPostings;
 exports.getPostingDetail = getPostingDetail;
-exports.searchPostings = searchPostings;
 exports.createPosting = createPosting;
+exports.updatePosting = updatePosting;
 exports.deletePosting = deletePosting;
+exports.searchPostings = searchPostings;
