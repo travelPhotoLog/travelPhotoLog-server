@@ -1,6 +1,6 @@
 const { body, validationResult } = require("express-validator");
 
-const ERROR_MESSAGE = require("../constants");
+const { ERROR_MESSAGE } = require("../constants");
 
 const signUpInputValidators = [
   body("user.email")

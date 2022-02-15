@@ -1,25 +1,39 @@
 const url = require("url");
 
 require("../models/Photo");
+
+const Map = require("../models/Map");
 const Point = require("../models/Point");
 const { ERROR_MESSAGE } = require("../constants");
 
 const getPhotos = async (req, res, next) => {
-  const { latitude, longitude } = url.parse(req.url, true).query;
+  const { latitude, longitude, map: mapId } = req.query;
 
   try {
-    const point = await Point.findOne({ latitude, longitude }).exec();
+    const { points } = await Map.findById(mapId).populate("points").exec();
+
+    if (!points.length) {
+      res.json({ photos: [] });
+      return;
+    }
+
+    const point = points.find(
+      point =>
+        point.latitude === parseFloat(latitude) &&
+        point.longitude === parseFloat(longitude)
+    );
 
     if (!point) {
       res.json({ photos: [] });
       return;
     }
 
-    const { photos: dbPhotos } = await Point.findOne({ latitude, longitude })
+    const { photos: dbPhotos } = await Point.findById(point._id)
       .populate({
         path: "photos",
         populate: { path: "comments", model: "Comment" },
       })
+      .select({ photos: 1 })
       .lean()
       .exec();
 

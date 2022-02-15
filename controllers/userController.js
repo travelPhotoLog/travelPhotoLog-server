@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Posting = require("../models/Posting");
 const { PAGE_SIZE, ERROR_MESSAGE } = require("../constants");
 
 const getUserMaps = async (req, res, next) => {
@@ -36,6 +37,7 @@ const getUserPostings = async (req, res, next) => {
       throw new Error(ERROR_MESSAGE.BAD_REQUEST);
     }
 
+    const totalCount = await Posting.countDocuments();
     const { myPostings } = await User.findById(userId)
       .populate({
         path: "myPostings",
@@ -59,6 +61,7 @@ const getUserPostings = async (req, res, next) => {
 
     res.json({
       postings,
+      totalPages: Math.ceil(totalCount / PAGE_SIZE),
     });
   } catch (error) {
     if (error.message === ERROR_MESSAGE.BAD_REQUEST) {

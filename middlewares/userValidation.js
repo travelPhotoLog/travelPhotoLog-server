@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
-const ERROR_MESSAGE = require("../constants");
+const { ERROR_MESSAGE } = require("../constants");
 
 const validateUser = async (req, res, next) => {
   const { email } = req.body;
