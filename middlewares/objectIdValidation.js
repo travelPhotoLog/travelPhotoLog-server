@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const ERROR_MESSAGE = require("../constants");
+const { ERROR_MESSAGE } = require("../constants");
 
 const validateId = (req, res, next) => {
   const { id } = req.params;

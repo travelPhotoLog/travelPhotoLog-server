@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
-const ERROR_MESSAGE = require("../constants");
+const { ERROR_MESSAGE } = require("../constants");
 
 const postLogin = async (req, res, next) => {
   const { accessToken } = req.cookies;

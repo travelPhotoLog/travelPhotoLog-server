@@ -12,6 +12,7 @@ const getPostings = async (req, res, next) => {
       throw new Error(ERROR_MESSAGE.BAD_REQUEST);
     }
 
+    const totalCount = await Posting.countDocuments();
     const postings = await Posting.find()
       .sort({ createdAt: -1 })
       .skip(pageSize * (pageNum - 1))
@@ -21,6 +22,7 @@ const getPostings = async (req, res, next) => {
 
     res.json({
       postings,
+      totalPages: Math.ceil(totalCount / PAGE_SIZE),
     });
   } catch (error) {
     if (error.message === ERROR_MESSAGE.BAD_REQUEST) {
@@ -69,6 +71,7 @@ const createPosting = async (req, res, next) => {
     const newPosting = await new Posting(posting);
     const currentUser = await User.findById(userId).exec();
 
+    console.log(newPosting);
     const newPostingId = newPosting._id;
     currentUser.myPostings.push(newPostingId);
 
