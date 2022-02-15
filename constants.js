@@ -27,5 +27,8 @@ const RESPONSE_MESSAGE = Object.freeze({
   ALREADY_INVITED: "이미 초대 메일을 보낸 유저입니다.",
 });
 
+const PAGE_SIZE = 8;
+
+exports.PAGE_SIZE = PAGE_SIZE;
 exports.ERROR_MESSAGE = ERROR_MESSAGE;
 exports.RESPONSE_MESSAGE = RESPONSE_MESSAGE;
