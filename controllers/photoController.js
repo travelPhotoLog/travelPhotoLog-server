@@ -45,7 +45,11 @@ const uploadPhoto = async (req, res, next) => {
     }
 
     if (!currentPoint) {
-      const newPoint = await Point.create(point);
+      const newPoint = await Point.create({
+        latitude,
+        longitude,
+        placeName,
+      });
       const newPointId = newPoint._id;
       const newPhotoId = newPhoto._id;
 
@@ -57,6 +61,7 @@ const uploadPhoto = async (req, res, next) => {
       await Promise.all([newPhoto.save(), newPoint.save(), currentMap.save()]);
 
       res.json({
+        result: "ok",
         pointId: newPointId,
       });
     }
