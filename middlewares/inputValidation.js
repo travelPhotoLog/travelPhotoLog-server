@@ -48,23 +48,7 @@ const pointValidators = [
 ];
 
 const photoValidators = [
-  body("photo.createdAt")
-    .exists()
-    .isDate()
-    .isBefore(new Date())
-    .withMessage(ERROR_MESSAGE.VALID_DATE_REQUIRED),
-  body("photo.url")
-    .exists()
-    .trim()
-    .isURL()
-    .withMessage(ERROR_MESSAGE.URL_REQUIRED),
-  body("photo.placeName")
-    .exists()
-    .withMessage(ERROR_MESSAGE.PLACENAME_REQUIRED),
-  body("photo.point")
-    .exists()
-    .isObject()
-    .withMessage(ERROR_MESSAGE.POINT_REQUIRED),
+  body("photo").isJSON().withMessage(ERROR_MESSAGE.BAD_REQUEST),
 ];
 
 const postingInputValidators = [

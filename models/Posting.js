@@ -17,6 +17,11 @@ const PostingSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  imageUrl: {
+    type: String,
+    default:
+      "https://travelphotolog.s3.ap-northeast-2.amazonaws.com/1644760423718.png",
+  },
   hashtags: [
     {
       type: String,
