@@ -1,5 +1,3 @@
-const url = require("url");
-
 const Photo = require("../models/Photo");
 const Point = require("../models/Point");
 const Map = require("../models/Map");
@@ -50,6 +48,7 @@ const uploadPhoto = async (req, res, next) => {
         longitude,
         placeName,
       });
+
       const newPointId = newPoint._id;
       const newPhotoId = newPhoto._id;
 
@@ -77,7 +76,7 @@ const uploadPhoto = async (req, res, next) => {
 
 const deletePhoto = async (req, res, next) => {
   const { id: photoId } = req.params;
-  const { map: mapId } = url.parse(req.url, true).query;
+  const { map: mapId } = req.query;
 
   try {
     const currentMap = await Map.findById(mapId).exec();
@@ -90,27 +89,30 @@ const deletePhoto = async (req, res, next) => {
     const currentPoint = await Point.findById(pointInPhoto);
     const { photos: photosInPoint } = currentPoint;
 
-    const deleteCommentFn = async comment => {
-      await Comment.deleteOne(comment);
+    const deleteCommentFn = async commentId => {
+      await Comment.deleteOne({ _id: commentId });
     };
 
     for (let i = 0; i < comments.length; i++) {
       deleteCommentFn(comments[i]._id);
     }
-    const newpointsArray = pointsInMap.filter(
-      pointInMap => pointInMap.toString() !== pointInPhoto.toString()
-    );
-    currentMap.points = newpointsArray;
 
     const newPhotosArray = photosInMap.filter(
       photoInMap => photoInMap.toString() !== photoId
     );
+
     currentMap.photos = newPhotosArray;
 
     if (photosInPoint.length === 1) {
+      const newPointsArray = pointsInMap.filter(pointInMap => {
+        return pointInMap.toString() !== pointInPhoto.toString();
+      });
+
+      currentMap.points = newPointsArray;
+
       await Promise.all([
-        Photo.deleteOne(photoId),
-        Point.deleteOne(pointInPhoto),
+        Photo.deleteOne({ _id: photoId }),
+        Point.deleteOne({ _id: pointInPhoto }),
         currentMap.save(),
       ]);
 
@@ -124,10 +126,11 @@ const deletePhoto = async (req, res, next) => {
     const newPhotosInPointArray = photosInPoint.filter(
       photoInPoint => photoInPoint.toString() !== photoId
     );
+
     currentPoint.photos = newPhotosInPointArray;
 
     await Promise.all([
-      Photo.findByIdAndDelete(photoId),
+      Photo.deleteOne({ _id: photoId }),
       currentPoint.save(),
       currentMap.save(),
     ]);
