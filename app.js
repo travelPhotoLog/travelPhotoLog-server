@@ -31,9 +31,6 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", (req, res, next) => {
-  res.status(200);
-});
 app.use("/auth", auth);
 app.use("/user", user);
 app.use("/map", map);
