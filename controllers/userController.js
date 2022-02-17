@@ -1,5 +1,5 @@
+require("../models/Posting");
 const User = require("../models/User");
-const Posting = require("../models/Posting");
 const { PAGE_SIZE, ERROR_MESSAGE } = require("../constants");
 
 const getUserMaps = async (req, res, next) => {
@@ -37,7 +37,6 @@ const getUserPostings = async (req, res, next) => {
       throw new Error(ERROR_MESSAGE.BAD_REQUEST);
     }
 
-    const totalCount = await Posting.countDocuments();
     const { myPostings } = await User.findById(userId)
       .populate({
         path: "myPostings",
@@ -50,6 +49,8 @@ const getUserPostings = async (req, res, next) => {
       })
       .lean()
       .exec();
+
+    const totalCount = myPostings.length;
 
     const postings = myPostings.map(posting => ({
       id: posting._id,

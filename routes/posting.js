@@ -11,6 +11,7 @@ const postingController = require("../controllers/postingController");
 const router = express.Router();
 
 router.get("/", postingController.getPostings);
+router.get("/search", postingController.searchPostings);
 router.get("/:id", validateId, postingController.getPostingDetail);
 router.put(
   "/:id",
@@ -20,7 +21,6 @@ router.put(
 );
 router.delete("/:id", validateId, postingController.deletePosting);
 
-router.get("/search", postingController.searchPostings);
 router.post(
   "/new",
   validate(postingInputValidators),

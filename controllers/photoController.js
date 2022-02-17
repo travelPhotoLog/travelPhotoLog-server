@@ -6,8 +6,8 @@ const Comment = require("../models/Comment");
 const { ERROR_MESSAGE } = require("../constants");
 
 const uploadPhoto = async (req, res, next) => {
-  const { photo, point, description, map } = req.body;
-  const { date, createdBy } = JSON.parse(photo);
+  const { photo, point, map } = req.body;
+  const { date, createdBy, description } = JSON.parse(photo);
   const { latitude, longitude, placeName } = JSON.parse(point);
 
   try {
