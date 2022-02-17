@@ -71,7 +71,6 @@ const createPosting = async (req, res, next) => {
     const newPosting = await new Posting(posting);
     const currentUser = await User.findById(userId).exec();
 
-    console.log(newPosting);
     const newPostingId = newPosting._id;
     currentUser.myPostings.push(newPostingId);
 

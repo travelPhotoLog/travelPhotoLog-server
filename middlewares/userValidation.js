@@ -33,8 +33,6 @@ const validateToken = async (req, res, next) => {
   const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
   const { accessToken, refreshToken } = req.cookies;
   const { user } = res.locals;
-  console.log(req.cookies);
-  console.log(accessToken, refreshToken);
 
   if (!accessToken && user) {
     const newAccessToken = jwt.sign({ email: user.email }, ACCESS_SECRET_KEY, {
@@ -49,22 +47,21 @@ const validateToken = async (req, res, next) => {
     );
 
     res.locals.newAccessToken = newAccessToken;
-    console.log(11111, newRefreshToken, newAccessToken);
 
     res.cookie("accessToken", newAccessToken, {
       maxAge: 14 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      domain: ".travel-photo-log.com",
-      sameSite: "none",
-      secure: true,
+      // domain: ".travel-photo-log.com",
+      // sameSite: "none",
+      // secure: true,
     });
 
     res.cookie("refreshToken", newRefreshToken, {
       maxAge: 14 * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      domain: ".travel-photo-log.com",
-      sameSite: "none",
-      secure: true,
+      // domain: ".travel-photo-log.com",
+      // sameSite: "none",
+      // secure: true,
     });
 
     user.refreshToken = newRefreshToken;
@@ -92,7 +89,6 @@ const validateToken = async (req, res, next) => {
     next();
     return;
   } catch (error) {
-    console.log(error);
     if (error.name === "TokenExpiredError") {
       try {
         const decodedToken = jwt.verify(refreshToken, REFRESH_SECRET_KEY);
@@ -107,9 +103,9 @@ const validateToken = async (req, res, next) => {
         res.cookie("accessToken", newAccessToken, {
           maxAge: 14 * 24 * 60 * 60 * 1000,
           httpOnly: true,
-          domain: "https://travel-photo-log.com",
-          sameSite: "none",
-          secure: true,
+          // domain: "https://travel-photo-log.com",
+          // sameSite: "none",
+          // secure: true,
         });
 
         next();
