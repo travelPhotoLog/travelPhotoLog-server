@@ -29,6 +29,8 @@ const options = {
 };
 
 app.use(cors(options));
+// app.use(cors());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
