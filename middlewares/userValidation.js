@@ -49,12 +49,11 @@ const validateToken = async (req, res, next) => {
     );
 
     res.locals.newAccessToken = newAccessToken;
-    console.log(111111111111111);
-    // res.setHeader('Access-Control-Allow-Credentials', "true")
 
     res.cookie("accessToken", newAccessToken, {
       maxAge: 14 * 24 * 60 * 60 * 1000,
       httpOnly: true,
+      domain: ".travel-photo-log.com",
       sameSite: "none",
       secure: true,
     });
@@ -62,6 +61,7 @@ const validateToken = async (req, res, next) => {
     res.cookie("refreshToken", newRefreshToken, {
       maxAge: 14 * 24 * 60 * 60 * 1000,
       httpOnly: true,
+      domain: ".travel-photo-log.com",
       sameSite: "none",
       secure: true,
     });
