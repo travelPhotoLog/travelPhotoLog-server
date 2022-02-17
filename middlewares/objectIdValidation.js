@@ -16,7 +16,6 @@ const validateId = (req, res, next) => {
     return;
   }
 
-  console.log("id");
   next();
 };
 

@@ -49,6 +49,7 @@ const validateToken = async (req, res, next) => {
     );
 
     res.locals.newAccessToken = newAccessToken;
+    console.log(11111, newRefreshToken, newAccessToken);
 
     res.cookie("accessToken", newAccessToken, {
       maxAge: 14 * 24 * 60 * 60 * 1000,
