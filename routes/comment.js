@@ -1,12 +1,11 @@
 const express = require("express");
 
 const { validateId } = require("../middlewares/objectIdValidation");
+const commentController = require("../controllers/commentController");
 const {
   validate,
   commentInputValidator,
 } = require("../middlewares/inputValidation");
-
-const commentController = require("../controllers/commentController");
 
 const router = express.Router();
 
