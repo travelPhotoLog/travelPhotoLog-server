@@ -25,8 +25,6 @@ mongoose.connect(process.env.MONGODB_URL).catch(error => {
 const options = {
   origin: "https://travel-photo-log.com",
   credentials: true,
-  optionsSuccessStatus: 200,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
 app.use(cors(options));
