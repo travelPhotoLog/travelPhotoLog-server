@@ -4,6 +4,7 @@ const { PAGE_SIZE, ERROR_MESSAGE } = require("../constants");
 
 const getUserMaps = async (req, res, next) => {
   const { id } = req.params;
+  console.log(44444, id);
 
   try {
     const { myMaps: userMaps } = await User.findById(id)
@@ -18,6 +19,7 @@ const getUserMaps = async (req, res, next) => {
 
     res.json({ maps });
   } catch (error) {
+    console.log(error);
     res.json({
       error: {
         message: ERROR_MESSAGE.SERVER_ERROR,
