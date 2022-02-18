@@ -4,7 +4,6 @@ const { PAGE_SIZE, ERROR_MESSAGE } = require("../constants");
 
 const getUserMaps = async (req, res, next) => {
   const { id } = req.params;
-  console.log(44444, id);
 
   try {
     const { myMaps: userMaps } = await User.findById(id)
