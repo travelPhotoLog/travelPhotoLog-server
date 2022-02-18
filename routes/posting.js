@@ -24,7 +24,6 @@ router.delete("/:id", validateId, postingController.deletePosting);
 
 router.post(
   "/new",
-  validateToken,
   validate(postingInputValidators),
   postingController.createPosting
 );

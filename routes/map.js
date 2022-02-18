@@ -17,7 +17,6 @@ router.get("/:id/photos", validateId, mapController.getMapPhotos);
 router.get(
   "/:id/points",
   validateId,
-  validateToken,
   validateMember,
   mapController.getMapPoints
 );
