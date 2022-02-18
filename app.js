@@ -24,7 +24,7 @@ mongoose.connect(process.env.MONGODB_URL).catch(error => {
 
 app.use(
   cors({
-    origin: "https://travel-photo-log.com",
+    origin: "https://travel-photo-log.com/",
     credentials: true,
   })
 );
