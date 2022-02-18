@@ -7,6 +7,7 @@ const { ERROR_MESSAGE } = require("../constants");
 
 const addComment = async (req, res, next) => {
   const { comment, photo: photoId } = req.body;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const newComment = new Comment(comment);
@@ -21,6 +22,25 @@ const addComment = async (req, res, next) => {
       .populate("comments")
       .lean()
       .exec();
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        comments,
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        comments,
+      });
+
+      return;
+    }
 
     res.json({
       comments,
@@ -38,6 +58,7 @@ const addComment = async (req, res, next) => {
 const deleteComment = async (req, res, next) => {
   const { id: commentId } = req.params;
   const { photo: photoId } = url.parse(req.url, true).query;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const photo = await Photo.findById(photoId).exec();
@@ -61,6 +82,25 @@ const deleteComment = async (req, res, next) => {
       .populate("comments")
       .lean()
       .exec();
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        comments,
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        comments,
+      });
+
+      return;
+    }
 
     res.json({
       comments,

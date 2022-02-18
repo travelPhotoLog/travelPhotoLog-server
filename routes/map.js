@@ -12,21 +12,40 @@ const mapController = require("../controllers/mapController");
 
 const router = express.Router();
 
-router.get("/:id/photos", validateId, mapController.getMapPhotos);
+router.get(
+  "/:id/photos",
+  validateId,
+  validateToken,
+  validateMember,
+  mapController.getMapPhotos
+);
 
-router.get("/:id/points", validateId, mapController.getMapPoints);
+router.get(
+  "/:id/points",
+  validateId,
+  validateToken,
+  validateMember,
+  mapController.getMapPoints
+);
 router.post("/new", mapController.createNewMap);
-router.get("/:id/members", validateId, mapController.getMembers);
+router.get(
+  "/:id/members",
+  validateId,
+  validateToken,
+  validateMember,
+  mapController.getMembers
+);
 
 router.put(
   "/:id/invitation",
   validateId,
-  validateInviteToken,
+  validateMember,
   mapController.inviteNewMember
 );
 router.put(
   "/:id/invitation/:token",
   validateId,
+  validateToken,
   validateInvitation,
   mapController.addInvitedUser
 );

@@ -12,6 +12,7 @@ const { INVITATION_SECRET_KEY, INVITATION_MAIL, INVITATION_PASSWORD } =
 
 const getMapPhotos = async (req, res, next) => {
   const { id } = req.params;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const { photos: mapPhotos } = await Map.findById(id)
@@ -22,6 +23,25 @@ const getMapPhotos = async (req, res, next) => {
     const photos = mapPhotos
       .sort((a, b) => b.date - a.date)
       .map(photo => photo.url);
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        photos,
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        photos,
+      });
+
+      return;
+    }
 
     res.json({ photos });
   } catch (error) {
@@ -36,12 +56,32 @@ const getMapPhotos = async (req, res, next) => {
 
 const getMapPoints = async (req, res, next) => {
   const { id } = req.params;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const { points: mapPoints } = await Map.findById(id)
       .populate("points")
       .lean()
       .exec();
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        mapPoints,
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        mapPoints,
+      });
+
+      return;
+    }
 
     res.json({ mapPoints });
   } catch {
@@ -56,6 +96,7 @@ const getMapPoints = async (req, res, next) => {
 
 const createNewMap = async (req, res, next) => {
   const { map, user: id } = req.body;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const currentUser = await User.findById(id).exec();
@@ -65,6 +106,25 @@ const createNewMap = async (req, res, next) => {
     currentUser.myMaps.push(newMap);
 
     await Promise.all([newMap.save(), currentUser.save()]);
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        result: "ok",
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        result: "ok",
+      });
+
+      return;
+    }
 
     res.json({
       result: "ok",
@@ -81,6 +141,7 @@ const createNewMap = async (req, res, next) => {
 
 const getMembers = async (req, res, next) => {
   const { id } = req.params;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const { members: memberList } = await Map.findById(id)
@@ -95,9 +156,26 @@ const getMembers = async (req, res, next) => {
       };
     });
 
-    res.json({
-      members,
-    });
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        members,
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        members,
+      });
+
+      return;
+    }
+
+    res.json({ members });
   } catch {
     res.json({
       error: {
@@ -111,6 +189,7 @@ const getMembers = async (req, res, next) => {
 const addInvitedUser = async (req, res, next) => {
   const { id } = req.params;
   const { userEmail } = res.locals;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const user = await User.findOneAndUpdate(
@@ -129,6 +208,25 @@ const addInvitedUser = async (req, res, next) => {
     invitationList.splice(removedUserIndex, 1);
 
     await map.save();
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        result: "ok",
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        result: "ok",
+      });
+
+      return;
+    }
 
     res.json({
       result: "ok",

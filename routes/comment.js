@@ -6,14 +6,21 @@ const {
   validate,
   commentInputValidator,
 } = require("../middlewares/inputValidation");
+const { validateToken } = require("../middlewares/userValidation");
 
 const router = express.Router();
 
 router.post(
   "/new",
   validate(commentInputValidator),
+  validateToken,
   commentController.addComment
 );
-router.delete("/:id", validateId, commentController.deleteComment);
+router.delete(
+  "/:id",
+  validateId,
+  validateToken,
+  commentController.deleteComment
+);
 
 module.exports = router;

@@ -4,6 +4,7 @@ const { PAGE_SIZE, ERROR_MESSAGE } = require("../constants");
 
 const getUserMaps = async (req, res, next) => {
   const { id } = req.params;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const { myMaps: userMaps } = await User.findById(id)
@@ -15,6 +16,25 @@ const getUserMaps = async (req, res, next) => {
       id: map._id,
       title: map.title,
     }));
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        maps,
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        maps,
+      });
+
+      return;
+    }
 
     res.json({ maps });
   } catch (error) {
@@ -28,6 +48,7 @@ const getUserMaps = async (req, res, next) => {
 };
 
 const getUserPostings = async (req, res, next) => {
+  const { newAccessToken, newRefreshToken } = res.locals;
   const { id: userId } = req.params;
   const pageNum = parseInt(req.query.page, 10);
   const pageSize = PAGE_SIZE;
@@ -59,6 +80,27 @@ const getUserPostings = async (req, res, next) => {
       createdAt: posting.createdAt,
       imageUrl: posting.imageUrl,
     }));
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        postings,
+        totalPages: Math.ceil(totalCount / PAGE_SIZE),
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        postings,
+        totalPages: Math.ceil(totalCount / PAGE_SIZE),
+      });
+
+      return;
+    }
 
     res.json({
       postings,

@@ -30,13 +30,15 @@ const validateUser = async (req, res, next) => {
 };
 
 const validateToken = async (req, res, next) => {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  const refreshToken = req.headers.authorization.split(" ")[2];
+
   const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
-  const { accessToken, refreshToken } = req.cookies;
   const { user } = res.locals;
 
-  if (!accessToken && user) {
+  if (accessToken === "null" && user) {
     const newAccessToken = jwt.sign({ email: user.email }, ACCESS_SECRET_KEY, {
-      expiresIn: "1h",
+      expiresIn: "10m",
     });
     const newRefreshToken = jwt.sign(
       { email: user.email },
@@ -80,7 +82,7 @@ const validateToken = async (req, res, next) => {
         const newAccessToken = jwt.sign(
           { email: decodedToken.email },
           ACCESS_SECRET_KEY,
-          { expiresIn: "1h" }
+          { expiresIn: "10m" }
         );
 
         res.locals.newAccessToken = newAccessToken;
@@ -94,9 +96,6 @@ const validateToken = async (req, res, next) => {
               { refreshToken },
               { refreshToken: "" }
             ).exec();
-
-            res.clearCookie("accessToken");
-            res.clearCookie("refreshToken");
 
             res.json({
               message: ERROR_MESSAGE.RELOGIN_NEEDED,

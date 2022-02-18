@@ -6,7 +6,12 @@ const { validateId } = require("../middlewares/objectIdValidation");
 
 const router = express.Router();
 
-router.get("/:id/maps", validateId, userController.getUserMaps);
-router.get("/:id/postings", validateId, userController.getUserPostings);
+router.get("/:id/maps", validateId, validateToken, userController.getUserMaps);
+router.get(
+  "/:id/postings",
+  validateId,
+  validateToken,
+  userController.getUserPostings
+);
 
 module.exports = router;
