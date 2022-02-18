@@ -1,10 +1,6 @@
 const socket = require("socket.io");
 
 const server = server => {
-  // const io = socket(server, {
-  //   cors: { origin: "https://travel-photo-log.com" },
-  // });
-
   const io = socket(server, { cors: { origin: "*" } });
 
   io.on("connection", socket => {

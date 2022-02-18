@@ -36,6 +36,7 @@ const PostingSchema = new mongoose.Schema({
   ],
   logOption: {
     type: Boolean,
+    required: true,
   },
 });
 

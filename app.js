@@ -22,13 +22,7 @@ mongoose.connect(process.env.MONGODB_URL).catch(error => {
   console.log(`🔴 Connection error.. with [${error}]`);
 });
 
-app.use(
-  cors({
-    origin: "https://travel-photo-log.com",
-    credentials: true,
-  })
-);
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
