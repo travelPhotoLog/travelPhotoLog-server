@@ -5,7 +5,6 @@ const { ERROR_MESSAGE } = require("../constants");
 
 const validateUser = async (req, res, next) => {
   const { email } = req.body;
-  console.log(11111111, email);
 
   try {
     const user = await User.findOne({ email }).exec();
@@ -34,8 +33,6 @@ const validateToken = async (req, res, next) => {
   const { ACCESS_SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
   const { accessToken, refreshToken } = req.cookies;
   const { user } = res.locals;
-
-  console.log(2222222, user);
 
   if (!accessToken && user) {
     const newAccessToken = jwt.sign({ email: user.email }, ACCESS_SECRET_KEY, {
@@ -75,7 +72,6 @@ const validateToken = async (req, res, next) => {
     jwt.verify(accessToken, ACCESS_SECRET_KEY);
 
     next();
-    console.log(3333333);
     return;
   } catch (error) {
     if (error.name === "TokenExpiredError") {

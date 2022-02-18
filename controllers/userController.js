@@ -19,7 +19,6 @@ const getUserMaps = async (req, res, next) => {
 
     res.json({ maps });
   } catch (error) {
-    console.log(error);
     res.json({
       error: {
         message: ERROR_MESSAGE.SERVER_ERROR,

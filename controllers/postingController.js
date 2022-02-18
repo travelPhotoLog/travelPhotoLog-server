@@ -27,7 +27,6 @@ const getPostings = async (req, res, next) => {
       totalPages: Math.ceil(totalCount / PAGE_SIZE),
     });
   } catch (error) {
-    console.log(error);
     if (error.message === ERROR_MESSAGE.BAD_REQUEST) {
       res.json({
         error: {
