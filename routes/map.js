@@ -14,12 +14,7 @@ const router = express.Router();
 
 router.get("/:id/photos", validateId, mapController.getMapPhotos);
 
-router.get(
-  "/:id/points",
-  validateId,
-  validateMember,
-  mapController.getMapPoints
-);
+router.get("/:id/points", validateId, mapController.getMapPoints);
 router.post("/new", mapController.createNewMap);
 router.get("/:id/members", validateId, mapController.getMembers);
 
