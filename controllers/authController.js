@@ -5,7 +5,7 @@ const { ERROR_MESSAGE } = require("../constants");
 
 const postLogin = async (req, res, next) => {
   const { accessToken } = req.cookies;
-  const { newAccessToken } = res.locals;
+  const { newAccessToken, newRefreshToken } = res.locals;
   const { ACCESS_SECRET_KEY } = process.env;
   const { email } = newAccessToken
     ? jwt.verify(newAccessToken, ACCESS_SECRET_KEY)
@@ -13,6 +13,33 @@ const postLogin = async (req, res, next) => {
 
   try {
     const user = await User.findOne({ email }).exec();
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        user: {
+          id: user._id,
+          email: user.email,
+          nickname: user.nickname,
+        },
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        user: {
+          id: user._id,
+          email: user.email,
+          nickname: user.nickname,
+        },
+      });
+
+      return;
+    }
 
     res.json({
       user: {
