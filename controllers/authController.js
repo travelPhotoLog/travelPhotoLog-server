@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { ERROR_MESSAGE } = require("../constants");
 
 const postLogin = async (req, res, next) => {
-  const { accessToken } = req.cookies;
+  const accessToken = req.headers.authorization.split(" ")[1];
   const { newAccessToken, newRefreshToken } = res.locals;
   const { ACCESS_SECRET_KEY } = process.env;
   const { email } = newAccessToken
@@ -63,9 +63,6 @@ const postLogout = async (req, res, next) => {
 
   try {
     await User.findOneAndUpdate({ email }, { refreshToken: "" }).exec();
-
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
 
     res.json({
       result: "ok",

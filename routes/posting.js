@@ -17,13 +17,20 @@ router.get("/:id", validateId, postingController.getPostingDetail);
 router.put(
   "/:id",
   validateId,
+  validateToken,
   validate(postingInputValidators),
   postingController.updatePosting
 );
-router.delete("/:id", validateId, postingController.deletePosting);
+router.delete(
+  "/:id",
+  validateId,
+  validateToken,
+  postingController.deletePosting
+);
 
 router.post(
   "/new",
+  validateToken,
   validate(postingInputValidators),
   postingController.createPosting
 );

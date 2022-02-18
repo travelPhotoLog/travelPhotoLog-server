@@ -1,5 +1,3 @@
-const url = require("url");
-
 require("../models/Photo");
 
 const Map = require("../models/Map");

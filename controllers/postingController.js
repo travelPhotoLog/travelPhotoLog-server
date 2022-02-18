@@ -20,8 +20,6 @@ const getPostings = async (req, res, next) => {
       .lean()
       .exec();
 
-    // res.header("Access-Control-Allow-Origin", "https://travel-photo-log.com");
-
     res.json({
       postings,
       totalPages: Math.ceil(totalCount / PAGE_SIZE),
@@ -53,9 +51,7 @@ const getPostingDetail = async (req, res, next) => {
   try {
     const posting = await Posting.findById(postingId).lean().exec();
 
-    res.json({
-      posting,
-    });
+    res.json({ posting });
   } catch {
     res.json({
       error: {
@@ -68,6 +64,7 @@ const getPostingDetail = async (req, res, next) => {
 
 const createPosting = async (req, res, next) => {
   const { posting, user: userId } = req.body;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   try {
     const newPosting = await new Posting(posting);
@@ -77,6 +74,25 @@ const createPosting = async (req, res, next) => {
     currentUser.myPostings.push(newPostingId);
 
     await Promise.all([currentUser.save(), newPosting.save()]);
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        result: "ok",
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        result: "ok",
+      });
+
+      return;
+    }
 
     res.json({
       result: "ok",
@@ -94,6 +110,7 @@ const createPosting = async (req, res, next) => {
 const updatePosting = async (req, res, next) => {
   const { id: postingId } = req.params;
   const { posting } = req.body;
+  const { newAccessToken, newRefreshToken } = res.locals;
 
   const { title, content, hashtags, regions, logOption } = posting;
 
@@ -108,6 +125,25 @@ const updatePosting = async (req, res, next) => {
         logOption,
       }
     );
+
+    if (newRefreshToken) {
+      res.json({
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        result: "ok",
+      });
+
+      return;
+    }
+
+    if (newAccessToken) {
+      res.json({
+        accessToken: newAccessToken,
+        result: "ok",
+      });
+
+      return;
+    }
 
     res.json({
       result: "ok",

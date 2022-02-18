@@ -6,10 +6,9 @@ const { ERROR_MESSAGE } = require("../constants");
 const { ACCESS_SECRET_KEY } = process.env;
 
 const validateMember = async (req, res, next) => {
-  const { id } = req.params;
-
-  const { accessToken } = req.cookies;
+  const accessToken = req.headers.authorization.split(" ")[1];
   const { newAccessToken } = res.locals;
+  const { id } = req.params;
 
   const { email } = newAccessToken
     ? jwt.verify(newAccessToken, ACCESS_SECRET_KEY)
