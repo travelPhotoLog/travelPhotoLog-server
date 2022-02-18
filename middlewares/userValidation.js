@@ -47,16 +47,7 @@ const validateToken = async (req, res, next) => {
     );
 
     res.locals.newAccessToken = newAccessToken;
-
-    res.cookie("accessToken", newAccessToken, {
-      maxAge: 14 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
-
-    res.cookie("refreshToken", newRefreshToken, {
-      maxAge: 14 * 24 * 60 * 60 * 1000,
-      httpOnly: true,
-    });
+    res.locals.newRefreshToken = newRefreshToken;
 
     user.refreshToken = newRefreshToken;
 
@@ -93,11 +84,6 @@ const validateToken = async (req, res, next) => {
         );
 
         res.locals.newAccessToken = newAccessToken;
-
-        res.cookie("accessToken", newAccessToken, {
-          maxAge: 14 * 24 * 60 * 60 * 1000,
-          httpOnly: true,
-        });
 
         next();
         return;

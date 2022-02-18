@@ -20,6 +20,8 @@ const getPostings = async (req, res, next) => {
       .lean()
       .exec();
 
+    // res.header("Access-Control-Allow-Origin", "https://travel-photo-log.com");
+
     res.json({
       postings,
       totalPages: Math.ceil(totalCount / PAGE_SIZE),
@@ -71,7 +73,6 @@ const createPosting = async (req, res, next) => {
     const newPosting = await new Posting(posting);
     const currentUser = await User.findById(userId).exec();
 
-    console.log(newPosting);
     const newPostingId = newPosting._id;
     currentUser.myPostings.push(newPostingId);
 

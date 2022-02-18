@@ -7,6 +7,7 @@ const {
 const { validateId } = require("../middlewares/objectIdValidation");
 
 const postingController = require("../controllers/postingController");
+const { validateToken } = require("../middlewares/userValidation");
 
 const router = express.Router();
 
