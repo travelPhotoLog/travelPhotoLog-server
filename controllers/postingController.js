@@ -20,6 +20,8 @@ const getPostings = async (req, res, next) => {
       .lean()
       .exec();
 
+    res.header("Access-Control-Allow-Origin", "https://travel-photo-log.com/");
+
     res.json({
       postings,
       totalPages: Math.ceil(totalCount / PAGE_SIZE),
